@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kde sa bojuje?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9ecf2; --surface:#ffffff; --surface-2:#f3f5f9; --ink:#171a22; --muted:#5c6474; --faint:#8a91a1;
+  --line:#d9dee7; --line-strong:#c3cad6;
+  --accent:#0d7a80; --accent-ink:#0a5c61; --accent-soft:#d7ecec;
+  --good:#1f9d57; --good-soft:#dcf2e5; --warn:#c9820a; --warn-soft:#fbefd6; --bad:#cf3d3d; --bad-soft:#f8dddd;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1017; --surface:#171b25; --surface-2:#1f2430; --ink:#e8ebf2; --muted:#a2aab9; --faint:#78808f;
+    --line:#2a303d; --line-strong:#3a4252;
+    --accent:#33b0b6; --accent-ink:#5ecacf; --accent-soft:#14343a;
+    --good:#3ec27a; --good-soft:#15301f; --warn:#e3a43a; --warn-soft:#352914; --bad:#ec6464; --bad-soft:#3a1c1e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1017; --surface:#171b25; --surface-2:#1f2430; --ink:#e8ebf2; --muted:#a2aab9; --faint:#78808f;
+  --line:#2a303d; --line-strong:#3a4252;
+  --accent:#33b0b6; --accent-ink:#5ecacf; --accent-soft:#14343a;
+  --good:#3ec27a; --good-soft:#15301f; --warn:#e3a43a; --warn-soft:#352914; --bad:#ec6464; --bad-soft:#3a1c1e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;overflow:hidden}
+h1,h2,h3{font-family:'Archivo',sans-serif;text-wrap:balance;margin:0}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* --- slides --- */
+.slide{position:absolute;inset:0;display:none;padding:clamp(20px,5vh,56px) clamp(16px,6vw,96px) 80px;overflow:auto}
+.slide.active{display:flex;flex-direction:column;justify-content:center}
+.inner{max-width:1100px;width:100%;margin:0 auto}
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:clamp(12px,1.3vw,16px);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.lock{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#fff}
+.lock svg{width:16px;height:16px}
+h1{font-size:clamp(40px,7vw,96px);font-weight:800;line-height:1.02;letter-spacing:-.01em}
+h2{font-size:clamp(28px,4.2vw,58px);font-weight:800;line-height:1.08;margin-bottom:.5em}
+.lead{font-size:clamp(18px,2.2vw,30px);color:var(--muted);margin-top:.6em;line-height:1.35}
+.big{font-size:clamp(22px,2.8vw,40px);line-height:1.3}
+.q{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(26px,3.6vw,52px);line-height:1.15;color:var(--ink)}
+.q .qm{color:var(--accent)}
+.step{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:clamp(12px,1.2vw,15px);letter-spacing:.12em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent-ink);padding:6px 12px;border-radius:6px;margin-bottom:18px}
+
+.strip{border-left:6px solid var(--accent);background:var(--surface);padding:22px 26px;border-radius:0 12px 12px 0;margin-top:24px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:22px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:22px}
+@media (max-width:760px){.grid2,.grid3,.grid5{grid-template-columns:1fr}}
+.card h3{font-size:clamp(20px,2.3vw,32px);margin-bottom:8px}
+.card p{margin:.3em 0;font-size:clamp(16px,1.7vw,24px);line-height:1.4;color:var(--muted)}
+.card .tag{font-family:'IBM Plex Mono',monospace;font-size:clamp(11px,1.05vw,14px);letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.card.acc{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft) inset}
+.card.warn{background:var(--warn-soft);border-color:transparent}
+.card.good{background:var(--good-soft);border-color:transparent}
+.nums{font-family:'IBM Plex Mono',monospace;color:var(--ink);font-size:clamp(15px,1.5vw,20px);margin-top:10px}
+.nums{display:flex;flex-wrap:wrap;gap:6px 8px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:3px 10px 3px 3px;font-family:'IBM Plex Sans',sans-serif;font-size:.85em;white-space:nowrap}
+.nums b{display:inline-grid;place-items:center;min-width:1.9em;height:1.9em;border-radius:6px;background:var(--accent);color:#fff;margin-right:4px;font-weight:600}
+
+ol.rules{font-size:clamp(20px,2.3vw,32px);line-height:1.5;padding-left:1.3em;margin:.4em 0}
+ol.rules li::marker{color:var(--accent);font-family:'Archivo';font-weight:800}
+
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:20px;font-size:clamp(16px,1.8vw,24px)}
+.flow span{background:var(--surface);border:1px solid var(--line);padding:10px 16px;border-radius:10px}
+.flow i{font-style:normal;color:var(--accent);font-weight:700}
+
+.dom{text-align:center;padding:20px 10px}
+.dom .ico{font-size:clamp(30px,4vw,54px)}
+.dom h3{font-size:clamp(17px,1.9vw,26px);margin-top:6px}
+.dom .n{font-family:'IBM Plex Mono';color:var(--faint);font-size:14px}
+.dom.five{border:2px solid var(--accent);background:var(--accent-soft)}
+
+/* incident mini-cards */
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:10px}
+@media (max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}}
+.slide .cards .ic{font-size:clamp(12px,1.08vw,16px)}
+.ic{background:var(--surface);border:1px dashed var(--line-strong);border-radius:10px;padding:12px 14px;font-size:clamp(13px,1.2vw,17px);line-height:1.35}
+.ic .h{font-weight:600;color:var(--accent-ink);font-size:.92em;margin:2px 0 6px}
+.ic b{display:inline-grid;place-items:center;width:1.8em;height:1.8em;border-radius:6px;background:var(--accent);color:#fff;font-family:'Archivo';margin-bottom:6px}
+
+.tight .q{font-size:clamp(22px,2.8vw,40px)}
+.tight .big{font-size:clamp(16px,1.8vw,24px)}
+.tight .card{padding:14px 18px}
+.tight .card p{font-size:clamp(14px,1.35vw,18px);margin:.2em 0}
+.tight .card h3{font-size:clamp(18px,2vw,26px)}
+.tight .lead{font-size:clamp(15px,1.6vw,22px);margin-top:.5em}
+.tight .chip{font-size:.75em}
+.tight .grid3{gap:14px}
+.tight .strip p{font-size:clamp(14px,1.45vw,19px)!important}
+.tight .strip{padding:14px 22px}
+/* fragments */
+.f{opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s;visibility:hidden}
+.f.on{opacity:1;transform:none;visibility:visible}
+
+/* chrome */
+.bar{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--faint);z-index:5;pointer-events:none}
+.bar button{pointer-events:auto}
+.btn{background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;cursor:pointer}
+.btn:hover{color:var(--ink);border-color:var(--line-strong)}
+.top{position:fixed;top:12px;right:14px;display:flex;gap:8px;z-index:6}
+.progress{position:fixed;left:0;top:0;height:4px;background:var(--accent);transition:width .3s;z-index:6}
+
+/* teacher notes */
+#notes{position:fixed;left:16px;right:16px;bottom:52px;max-height:46vh;overflow:auto;background:var(--surface);border:2px solid var(--warn);border-radius:14px;padding:16px 20px;box-shadow:0 10px 40px rgba(0,0,0,.25);display:none;z-index:7;font-size:16px;line-height:1.5}
+#notes.show{display:block}
+#notes .h{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--warn);margin-bottom:6px}
+#notes p{margin:.35em 0}
+#notes .say::before{content:"Povedz: ";font-weight:600;color:var(--good)}
+#notes .ask::before{content:"Pýtaj sa: ";font-weight:600;color:var(--accent)}
+#notes .no::before{content:"Nepovedz: ";font-weight:600;color:var(--bad)}
+.slide aside.n{display:none}
+.hint{font-family:'IBM Plex Mono';font-size:13px;color:var(--faint);margin-top:26px}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="top">
+  <button class="btn" id="notesBtn" title="Poznámky pre učiteľku (N)">Poznámky · N</button>
+  <button class="btn" id="themeBtn" title="Svetlý / tmavý režim (T)">◐</button>
+</div>
+
+<!-- ============ 1 · ÚVOD ============ -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker"><span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>Kybernetická bezpečnosť · SPŠ IT Ignáca Gessaya</div>
+    <h1>Kde sa bojuje?</h1>
+    <p class="lead">Téma 04 · hodina 1</p>
+    <p class="hint">→ / medzerník = ďalej · ← = späť · N = poznámky · T = režim</p>
+  </div>
+  <aside class="n">
+    <p class="no">názov témy („kybernetický a informačný priestor“), „päť domén“ ani žiadne definície. Celá hodina stojí na tom, že pojmy vymyslia sami.</p>
+    <p>Kartičky rozdaj až pri úlohe (sada na dvojicu).</p>
+  </aside>
+</section>
+
+<!-- ============ 2 · Z MINULA ============ -->
+<section class="slide">
+  <div class="inner">
+    <span class="step">Z minula</span>
+    <p class="big">Minule ste videli, čo všetko o vás vie Google.</p>
+    <div class="strip f"><p class="big" style="margin:0">Dnes: čo sa s takými dátami — <b>a s vami</b> — dá robiť, keď to niekto myslí zle.</p></div>
+  </div>
+  <aside class="n">
+    <p class="say">„Minule ste videli, čo všetko o vás vie Google. Dnes sa pozrieme, čo sa s takými dátami a s vami dá robiť, keď to niekto myslí zle.“</p>
+    <p class="no">čo budeme triediť a podľa čoho.</p>
+  </aside>
+</section>
+
+<!-- ============ 3 · ÚLOHA: TRIEDENIE ============ -->
+<section class="slide">
+  <div class="inner">
+    <span class="step">Úloha 1 · vo dvojiciach</span>
+    <h2>Roztrieďte kartičky do kôpok podľa toho, <span style="color:var(--accent)">čo útočník napadol.</span></h2>
+    <ol class="rules">
+      <li class="f">Kôpky si vymyslite sami. Koľko ich bude, je na vás.</li>
+      <li class="f">Každú kôpku pomenujte.</li>
+      <li class="f">Buďte pripravení povedať, <b>prečo</b> je kartička práve tam.</li>
+    </ol>
+  </div>
+  <aside class="n">
+    <p class="say">len zadanie, nič viac. Kôpky si vymyslia a pomenujú sami.</p>
+    <p class="no">žiadne príklady kôpok („napr. technické / fake news…“) — to by bola odpoveď.</p>
+    <p class="ask">pri obchádzke po triede: „Prečo je táto tu?“ · „Kam by ste dali tú s babkou?“ · „Je na tejto kartičke vôbec útočník?“</p>
+    <p>Nehodnoť. Spor v dvojici je dobrý signál — nechaj ich hádať sa.</p>
+  </aside>
+</section>
+
+<!-- ============ 4 · KARTIČKY (prehľad) ============ -->
+<section class="slide">
+  <div class="inner">
+    <span class="step">Kartičky · na spoločnú debatu</span>
+    <div class="cards">
+      <div class="ic"><b>1</b><div class="h">Gruzínsko / Arménsko · 28. 3. 2011</div>75‑ročná žena pri Tbilisi kopala lopatou meď a prerušila optický kábel. Väčšina Arménska bola niekoľko hodín bez internetu.</div>
+      <div class="ic"><b>2</b><div class="h">Česko · 24. 10. 2023</div>DDoS útok na weby vlády, ministerstva vnútra, polície a pražského letiska. Prihlásila sa k nemu proruská skupina NoName057(16).</div>
+      <div class="ic"><b>3</b><div class="h">Modelová situácia</div>Spolužiakovi niekto prevezme Instagram a píše z neho kamarátom, aby mu poslali peniaze.</div>
+      <div class="ic"><b>4</b><div class="h">Benešov (ČR) · december 2019</div>Ransomvér Ryuk zašifroval systémy nemocnice. Nemocnica týždne obmedzovala prevádzku a odkladala plánované operácie.</div>
+      <div class="ic"><b>5</b><div class="h">Modelová situácia</div>Pod článkom o novom zákone sa za hodinu objavia stovky komentárov z čerstvo založených účtov. Všetky majú takmer rovnaké vety.</div>
+      <div class="ic"><b>6</b><div class="h">Slovensko · 28. 9. 2023</div>Dva dni pred voľbami, počas moratória, sa šírila AI‑generovaná (deepfake) nahrávka, v ktorej mali Michal Šimečka (PS) a novinárka Monika Tódová (Denník N) hovoriť o manipulácii volieb.</div>
+      <div class="ic"><b>7</b><div class="h">Francúzsko · 5. 5. 2017</div>#MacronLeaks: dva dni pred 2. kolom prezidentských volieb sa objavilo asi 9 GB ukradnutých e‑mailov a dokumentov z kampane E. Macrona, pomiešaných s falzifikátmi.</div>
+      <div class="ic"><b>8</b><div class="h">Modelová situácia</div>Babka zdieľa na Facebooku: „Zajtra vypnú vodu v celom meste!“ Nie je to pravda, ale ona tomu verí.</div>
+      <div class="ic"><b>9</b><div class="h">Ukrajina → celý svet · 27. 6. 2017</div>Malvér NotPetya sa šíril cez aktualizáciu ukrajinského účtovného programu M.E.Doc. Zasiahol firmy po celom svete, napr. prepravcu Maersk.</div>
+      <div class="ic"><b>10</b><div class="h">Čierne more · jún 2017</div>GPS spoofing: vysielač na pevnine napodobnil signál družíc GPS. Navigačné prijímače asi 20 lodí potom ukazovali polohu na letisku Gelendžik (Rusko), vyše 30 km vo vnútrozemí.</div>
+    </div>
+  </div>
+  <aside class="n">
+    <p>Pomocný slajd — nechaj ho na plátne počas triedenia aj pri debate, nech sa dá ukazovať na čísla.</p>
+  </aside>
+</section>
+
+<!-- ============ 5 · AKÉ KÔPKY? → 2 PRIESTORY ============ -->
+<section class="slide">
+  <div class="inner">
+    <span class="step">Krok 2 · porovnanie</span>
+    <p class="q">Aké kôpky vám vznikli<span class="qm">?</span></p>
+    <div class="grid2">
+      <div class="card acc f">
+        <div class="tag">kôpka A</div>
+        <h3>Kybernetický priestor</h3>
+        <p>Káble, servery, programy, dáta.</p>
+        <p><b style="color:var(--ink)">Ako informácie prenášame a ukladáme.</b></p>
+        <p>Útočník (alebo nehoda) zasiahol IT systémy: hardvér, softvér, siete, dáta alebo účty.</p>
+        <div class="nums"><span class="chip"><b>1</b>Arménsko bez internetu</span><span class="chip"><b>2</b>DDoS na české weby</span><span class="chip"><b>3</b>Ukradnutý Instagram</span><span class="chip"><b>4</b>Ryuk v Benešove</span><span class="chip"><b>9</b>NotPetya</span><span class="chip"><b>10</b>GPS spoofing</span></div>
+      </div>
+      <div class="card acc f">
+        <div class="tag">kôpka B</div>
+        <h3>Informačný priestor</h3>
+        <p>To, čo tými káblami tečie — správy, príbehy, emócie.</p>
+        <p><b style="color:var(--ink)">Cieľ: hlava človeka.</b></p>
+        <p>Cieľom je to, čo si ľudia myslia.</p>
+        <div class="nums"><span class="chip"><b>6</b>Deepfake pred voľbami</span><span class="chip"><b>8</b>Babka a voda</span></div>
+      </div>
+    </div>
+  </div>
+  <aside class="n">
+    <p class="ask">2–3 dvojice: „Aké kôpky vám vznikli? Ako ste ich nazvali?“ Názvy píš na tabuľu presne ich slovami.</p>
+    <p>Takmer vždy vznikne niečo ako „technické / hack“ a „klamstvo / fake news“. Až keď to zaznie od nich, odhaľ dva stĺpce.</p>
+    <p class="say">„Vašu prvú kôpku odborníci volajú kybernetický priestor — káble, servery, kód. Druhú informačný priestor — to, čo tými káblami tečie. A tam je cieľom hlava človeka.“</p>
+    <p class="no">zatiaľ nič o hybridných hrozbách — príde na ďalšom slajde zo sporných kartičiek.</p>
+  </aside>
+</section>
+
+<!-- ============ 6 · SPORNÉ KARTY → HYBRID ============ -->
+<section class="slide">
+  <div class="inner">
+    <span class="step">Sporné kartičky</span>
+    <p class="q">Kam patria tieto dve kartičky<span class="qm">?</span></p>
+    <div class="nums" style="margin-top:16px;font-size:clamp(18px,1.9vw,26px)"><span class="chip"><b>5</b>Rovnaké komentáre</span><span class="chip"><b>7</b>#MacronLeaks</span></div>
+    <p class="big f" style="margin-top:18px">Do oboch.</p>
+    <div class="flow f">
+      <span>ukradnuté e‑maily</span><i>→</i><span>zverejnenie</span><i>→</i><span>primiešané falzifikáty</span><i>→</i><span>nedôvera</span>
+    </div>
+    <div class="strip f">
+      <h3 style="font-size:clamp(24px,3vw,40px)">Hybridná hrozba</h3>
+      <p class="big" style="margin:.3em 0 0">Technický útok slúži ako <b>palivo</b> pre manipuláciu.</p>
+    </div>
+  </div>
+  <aside class="n">
+    <p class="ask">„Kam ste dali rovnaké komentáre (5) a #MacronLeaks (7)? Kto ich má inde?“ — nechaj zaznieť obe strany.</p>
+    <p class="say">„Nepatria do jednej kôpky — začínajú v kyberpriestore a končia v hlavách. Tomu sa hovorí hybridná hrozba: technický útok je palivo pre manipuláciu.“</p>
+    <p>Pri 5 · Rovnaké komentáre: boty/falošné účty (technický nástroj) → dojem, že „si to myslia všetci“ (cieľ v hlave). Pri 7 · #MacronLeaks: hack → zverejnenie s falzifikátmi = hack‑and‑leak (#MacronLeaks).</p>
+    <p>Ak niekto navrhne aj 6 alebo 3 — súhlas, sú tiež „na hrane“. Dobrý postreh.</p>
+  </aside>
+</section>
+
+<!-- ============ 6b · DELENIE NIE JE ULTIMÁTNE ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Pozor na škatuľky</span>
+    <p class="q">Je toto delenie jediné správne<span class="qm">?</span></p>
+    <div class="card f" style="margin-top:16px">
+      <div class="tag">triediť sa dá podľa rôznych kritérií</div>
+      <div class="nums" style="margin-top:8px;font-size:clamp(15px,1.5vw,20px)">
+        <span class="chip" style="padding-left:12px">bol útok zámerný?</span>
+        <span class="chip" style="padding-left:12px">bola za ním organizovaná skupina?</span>
+        <span class="chip" style="padding-left:12px">skutočnosť alebo modelová situácia?</span>
+        <span class="chip" style="padding-left:12px;border-color:var(--accent)"><b style="background:var(--accent)">✓</b>čo je cieľom útoku?</span>
+      </div>
+      <p style="margin-top:10px">Všetky sú legitímne. My sme triedili podľa <b style="color:var(--ink)">cieľa útoku</b>.</p>
+    </div>
+    <div class="grid2">
+      <div class="card f">
+        <div class="tag">následok ≠ cieľ</div>
+        <h3>Nedôvera príde takmer vždy</h3>
+        <p>Keď nejdú štátne servery, ľudia im potom menej dôverujú. Keď GPS raz ukázala nezmysel, už jej neveria. To je <b style="color:var(--ink)">následok</b> — nie ešte útok na informačný priestor.</p>
+      </div>
+      <div class="card acc f">
+        <div class="tag">kedy je cieľom informačný priestor</div>
+        <h3>Keď je za útokom <span style="color:var(--accent)">naratív</span></h3>
+        <p>Príbeh šírený cez siete, články, komentáre či videá, ktorý má <b style="color:var(--ink)">ovplyvniť, čo si myslíme</b>.</p>
+      </div>
+    </div>
+    <div class="strip f"><p class="big" style="margin:0">Delenie nie je ultimátne ani taxatívne. Incident sa vyhodnocuje až podľa <b>celej správy o incidente</b> — kto, čo, ako, s akým cieľom a s akými následkami.</p></div>
+  </div>
+  <aside class="n">
+    <p>Na hodine 04_01 žiaci najprv triedili podľa vlastných kritérií (zámer, organizovaná skupina, modelová vs. skutočná) — oceň to, je to správne pozorovanie.</p>
+    <p class="say">„Pri viacerých kartičkách vás lákalo dať ‚aj, aj‘ — lebo po každom výpadku ľudia menej dôverujú. To je následok. Informačný priestor je cieľom vtedy, keď je za útokom naratív cez siete, články a podobne, ktorý ovplyvňuje, čo si myslíme.“</p>
+    <p class="say">„Toto delenie nie je ultimátne. Skutočné vyhodnotenie robia odborníci až z celej správy o incidente.“ → most k ďalšej hodine (analýza 5 incidentov).</p>
+  </aside>
+</section>
+
+<!-- ============ 7 · VRSTVY ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Úloha 2 · len technické kartičky</span>
+    <p class="q">Čo presne bolo zasiahnuté<span class="qm">?</span></p>
+    <div class="card acc" style="margin-top:18px;padding:14px 22px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px">
+      <div><div class="tag">kôpka A</div><h3 style="margin:0">Kybernetický priestor</h3></div>
+      <div class="nums" style="margin:0"><span class="chip"><b>1</b>Arménsko bez internetu</span><span class="chip"><b>2</b>DDoS na české weby</span><span class="chip"><b>3</b>Ukradnutý Instagram</span><span class="chip"><b>4</b>Ryuk v Benešove</span><span class="chip"><b>9</b>NotPetya</span><span class="chip"><b>10</b>GPS spoofing</span></div>
+    </div>
+    <p class="mono" style="margin:10px 0 0;color:var(--muted);font-size:clamp(13px,1.3vw,17px);letter-spacing:.06em">↓ delenie v rámci kybernetického priestoru</p>
+    <div class="grid3" style="margin-top:10px">
+      <div class="card">
+        <p class="big" style="color:var(--ink);margin:0">Niečo, čoho sa dá <b>dotknúť</b></p>
+        <div class="f" style="margin-top:12px"><div class="tag">fyzická vrstva</div><p>káble, serverovne, antény, satelity, zariadenia</p><div class="nums"><span class="chip"><b>1</b>Arménsko bez internetu</span><span class="chip"><b>10</b>GPS spoofing</span></div></div>
+      </div>
+      <div class="card">
+        <p class="big" style="color:var(--ink);margin:0"><b>Softvér</b>, siete, dáta</p>
+        <div class="f" style="margin-top:12px"><div class="tag">logická vrstva</div><p>programy, protokoly, IP adresy, šifrovanie</p><div class="nums"><span class="chip"><b>2</b>DDoS na české weby</span><span class="chip"><b>4</b>Ryuk v Benešove</span><span class="chip"><b>9</b>NotPetya</span></div></div>
+      </div>
+      <div class="card">
+        <p class="big" style="color:var(--ink);margin:0"><b>Človek</b> a jeho účet</p>
+        <div class="f" style="margin-top:12px"><div class="tag">personálna vrstva</div><p>účty, digitálne identity, správanie ľudí</p><div class="nums"><span class="chip"><b>3</b>Ukradnutý Instagram</span></div></div>
+      </div>
+    </div>
+    <p class="lead f">Útočník si vyberá, kam udrie: preseknúť kábel, zneužiť chybu v programe — alebo oklamať človeka.</p>
+  </div>
+  <aside class="n">
+    <p class="say">„Vezmite len kartičky z technickej kôpky. Čo presne bolo zasiahnuté — niečo, čoho sa dá dotknúť, softvér, alebo človek a jeho účet?“</p>
+    <p>Najprv nech priradia oni, potom odhaľuj názvy vrstiev s číslami kartičiek.</p>
+    <p>Sporné: <b>4 · Ryuk v Benešove</b> — zašifrované systémy = logická, ale dnu sa útočník zvyčajne dostane cez človeka (phishing). <b>10 · GPS spoofing</b> — falošný rádiový signál; dá sa obhájiť fyzická aj logická. Ak sa hádajú, je to správne.</p>
+    <p class="no">definíciu vrstiev vopred. Prepojenie na minulú tému: personálna vrstva = digitálna identita.</p>
+  </aside>
+</section>
+
+<!-- ============ 8 · ARMÉNSKO: INCIDENT / ÚTOK + CIA ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Kartička 1 · Arménsko bez internetu</span>
+    <p class="big" style="color:var(--muted);margin:0">Žena kradla meď — internet vypnúť nechcela. A predsa bolo Arménsko hodiny offline.</p>
+    <div class="grid2" style="margin-top:16px">
+      <div class="card">
+        <p class="q" style="font-size:clamp(20px,2.4vw,34px);color:var(--ink);margin:0">Je to kybernetický incident<span class="qm">?</span></p>
+        <div class="f" style="margin-top:8px"><h3 style="color:var(--good);margin:0">Áno.</h3><p>Služba nefungovala, ľudia a firmy boli odrezaní. Na úmysle nezáleží.</p></div>
+      </div>
+      <div class="card">
+        <p class="q" style="font-size:clamp(20px,2.4vw,34px);color:var(--ink);margin:0">Je to kybernetický útok<span class="qm">?</span></p>
+        <div class="f" style="margin-top:8px"><h3 style="color:var(--bad);margin:0">Nie.</h3><p>Chýba úmysel. Príčinou bola nehoda.</p></div>
+      </div>
+    </div>
+    <div class="f" style="margin-top:18px">
+      <div class="tag mono" style="font-size:clamp(11px,1.05vw,14px);letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)">Čo chráni kybernetická bezpečnosť · triáda CIA</div>
+      <div class="grid3" style="margin-top:8px">
+        <div class="card"><h3>Dôvernosť</h3><p><i>Confidentiality</i> — dáta vidia len oprávnení.</p></div>
+        <div class="card"><h3>Integrita</h3><p><i>Integrity</i> — dáta nikto nepovolane nezmenil.</p></div>
+        <div class="card acc"><h3>Dostupnosť</h3><p><i>Availability</i> — systém funguje, keď ho treba. <b style="color:var(--ink)">← Arménsko</b></p></div>
+      </div>
+    </div>
+    <div class="strip f" style="margin-top:16px;padding:14px 22px"><p class="big" style="margin:0">Výpadok je výpadok — či ho spôsobí lopata, búrka, alebo útočník.</p></div>
+  </div>
+  <aside class="n">
+    <p class="ask">najprv „Je to kybernetický incident?“ — hlasovanie rukou, 1–2 argumenty, odhaľ odpoveď. Potom „Je to kybernetický útok?“ — rovnako.</p>
+    <p class="say">„Incident je čokoľvek, čo naruší fungovanie IT — aj nehoda. Útok je incident, za ktorým je niečí úmysel. Tu incident áno, útok nie.“</p>
+    <p class="ask">pred odhalením triády: „Čo všetko môže byť pri dátach a systémoch ‚pokazené‘?“ — nech skúsia sami (niekto ich ukradne / zmení / nejdú).</p>
+    <p class="say">„Bezpečnosť stráži tri veci: dôvernosť, integritu a dostupnosť — po anglicky CIA. Arménsko je dostupnosť. Preto majú firmy záložné linky a zálohy.“</p>
+    <p>Ak je čas: nech k ďalším kartičkám priradia písmeno — napr. #MacronLeaks = dôvernosť (ukradnuté e‑maily) + integrita (primiešané falzifikáty), Ryuk = dostupnosť, DDoS = dostupnosť.</p>
+  </aside>
+</section>
+
+<!-- ============ 8b · TRIÁDA CIA ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Triáda CIA</span>
+    <h2 style="margin-bottom:.2em;font-size:clamp(26px,3.4vw,46px)">Čo stráži kybernetická bezpečnosť</h2>
+    <p class="lead" style="margin-top:0">Základný model informačnej bezpečnosti: každý incident naruší aspoň jednu z troch vlastností. <span style="color:var(--faint)">(S americkou tajnou službou to nemá nič spoločné.)</span></p>
+    <div class="grid3">
+      <div class="card f">
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-family:Archivo;font-weight:800;font-size:clamp(34px,4vw,56px);color:var(--accent);line-height:1">C</span><div><h3 style="margin:0">Dôvernosť</h3><div class="tag">Confidentiality</div></div></div>
+        <p style="color:var(--ink);margin-top:8px"><b>K dátam sa dostane len ten, kto na to má právo.</b></p>
+        <p><span class="tag" style="color:var(--bad)">narušenie</span><br>únik databázy, ukradnuté e‑maily, odpočúvaná komunikácia</p>
+        <div class="nums" style="margin-top:4px"><span class="chip"><b>7</b>#MacronLeaks</span></div>
+        <p style="margin-top:8px"><span class="tag" style="color:var(--good)">ochrana</span><br>šifrovanie, prístupové práva, heslá, 2FA</p>
+      </div>
+      <div class="card f">
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-family:Archivo;font-weight:800;font-size:clamp(34px,4vw,56px);color:var(--accent);line-height:1">I</span><div><h3 style="margin:0">Integrita</h3><div class="tag">Integrity</div></div></div>
+        <p style="color:var(--ink);margin-top:8px"><b>Dáta sú správne a nikto ich nepovolane nezmenil.</b></p>
+        <p><span class="tag" style="color:var(--bad)">narušenie</span><br>podvrhnutý dokument, zmenené číslo účtu na faktúre, škodlivý kód v aktualizácii</p>
+        <div class="nums" style="margin-top:4px"><span class="chip"><b>9</b>NotPetya</span></div>
+        <p style="margin-top:8px"><span class="tag" style="color:var(--good)">ochrana</span><br>haše, digitálne podpisy, kontrolné súčty, logy zmien</p>
+      </div>
+      <div class="card f">
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-family:Archivo;font-weight:800;font-size:clamp(34px,4vw,56px);color:var(--accent);line-height:1">A</span><div><h3 style="margin:0">Dostupnosť</h3><div class="tag">Availability</div></div></div>
+        <p style="color:var(--ink);margin-top:8px"><b>Systém a dáta fungujú vtedy, keď ich treba.</b></p>
+        <p><span class="tag" style="color:var(--bad)">narušenie</span><br>DDoS, zašifrované systémy, prerušený kábel</p>
+        <div class="nums" style="margin-top:4px"><span class="chip"><b>2</b>DDoS na české weby</span><span class="chip"><b>4</b>Ryuk v Benešove</span><span class="chip"><b>1</b>Arménsko bez internetu</span></div>
+        <p style="margin-top:8px"><span class="tag" style="color:var(--good)">ochrana</span><br>zálohy, záložné linky, redundantné servery, ochrana proti DDoS</p>
+      </div>
+    </div>
+  </div>
+  <aside class="n">
+    <p class="say">„CIA je skratka z angličtiny — confidentiality, integrity, availability. Nie tajná služba. Pri dátach a systémoch strážime tieto tri veci a každý incident naruší aspoň jednu z nich.“</p>
+    <p class="ask">pred odhalením každého stĺpca: „Ako by sa to dalo narušiť? Ako by ste to chránili?“ — programátori veľa vymyslia sami.</p>
+  </aside>
+</section>
+
+<!-- ============ 8c · CIA V PRAXI ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Triáda CIA · v praxi</span>
+    <p class="q">Jeden incident často zasiahne <span style="color:var(--accent)">viac písmen naraz</span>.</p>
+    <div class="grid2">
+      <div class="card f"><div class="nums" style="margin:0 0 8px"><span class="chip"><b>4</b>Ryuk v Benešove</span></div><p><b style="color:var(--ink)">A</b> — zašifrované systémy nejdú. Pri dnešnom „dvojitom vydieraní“ útočníci dáta najprv ukradnú, takže aj <b style="color:var(--ink)">C</b>.</p></div>
+      <div class="card f"><div class="nums" style="margin:0 0 8px"><span class="chip"><b>7</b>#MacronLeaks</span></div><p><b style="color:var(--ink)">C</b> — ukradnuté e‑maily. <b style="color:var(--ink)">I</b> — primiešané falzifikáty.</p></div>
+    </div>
+    <div class="card f" style="margin-top:18px">
+      <div class="tag">poznáte z praxe</div>
+      <div class="grid3" style="margin-top:6px">
+        <p><b style="color:var(--ink)">HTTPS</b> chráni <b style="color:var(--accent)">C</b></p>
+        <p><b style="color:var(--ink)">hash</b> pri sťahovaní chráni <b style="color:var(--accent)">I</b></p>
+        <p><b style="color:var(--ink)">load balancer</b> chráni <b style="color:var(--accent)">A</b></p>
+      </div>
+    </div>
+    <div class="strip f"><p style="margin:0;font-size:clamp(16px,1.8vw,24px);line-height:1.4">Model sa niekedy rozširuje o <b>autenticitu</b> (je to naozaj od toho, za koho sa vydáva?) a <b>nepopierateľnosť</b> (odosielateľ nemôže zaprieť, že správu poslal). Triáda je základom normy <b>ISO/IEC 27001</b> a odvoláva sa na ňu aj európska a slovenská legislatíva o kybernetickej bezpečnosti.</p></div>
+  </div>
+  <aside class="n">
+    <p class="ask">„Ktoré písmená zasiahol Ryuk? A #MacronLeaks?“ — nech tipujú pred odhalením.</p>
+    <p class="ask">„Čo z vášho kódu chráni C, I, A?“ — HTTPS, hash, load balancer; možno pridajú bcrypt, Git, zálohy…</p>
+    <p>Ak je čas: nech priradia písmená aj ďalším kartičkám (DDoS = A, Instagram = C, NotPetya = I + A).</p>
+  </aside>
+</section>
+
+<!-- ============ 9 · BABKA ============ -->
+<section class="slide">
+  <div class="inner">
+    <span class="step">Kartička 8 · Babka a voda</span>
+    <p class="q">Šíri babka dezinformáciu<span class="qm">?</span></p>
+    <p class="big f" style="margin-top:16px">Rozhoduje <b style="color:var(--accent)">úmysel</b>.</p>
+    <div class="grid2">
+      <div class="card f" style="border-color:var(--bad)"><div class="tag" style="color:var(--bad)">vedome</div><h3>Dezinformácia</h3><p>Nepravda vytvorená a šírená <b>zámerne</b>, aby zavádzala alebo škodila. → ten, kto hoax vymyslel.</p></div>
+      <div class="card f" style="border-color:var(--warn)"><div class="tag" style="color:var(--warn)">v dobrej viere</div><h3>Misinformácia</h3><p>Nepravda šírená <b>bez zlého úmyslu</b> — omylom. → babka.</p></div>
+    </div>
+    <div class="strip f"><p class="big" style="margin:0">Keď dezinformáciu zdieľajú ľudia v dobrej viere, stáva sa z nej misinformácia — a <b>funguje ďalej</b>.</p></div>
+  </div>
+  <aside class="n">
+    <p class="ask">„Šíri babka dezinformáciu?“ — nechaj ich hádať sa. Doplňujúco: „Čím sa líši babka od toho, kto to vymyslel?“</p>
+    <p class="say">„Rozhoduje úmysel. Kto lož vymyslel, šíri dezinformáciu. Babka, ktorá tomu verí, šíri misinformáciu. A práve takí ľudia sú pre útočníka najcennejší — šíria za neho zadarmo a dôveryhodne.“</p>
+    <p class="no">„babka je hlúpa“ — nikto nie je imúnny, aj my zdieľame veci, ktoré sa neskôr ukážu ako nepravda.</p>
+  </aside>
+</section>
+
+<!-- ============ 10 · PÄŤ DOMÉN ============ -->
+<section class="slide">
+  <div class="inner">
+    <span class="step">Na záver</span>
+    <p class="q">Kde všade sa dá viesť konflikt<span class="qm">?</span></p>
+    <div class="grid5">
+      <div class="card dom f"><div class="ico">⛰️</div><h3>Zem</h3><div class="n">1</div></div>
+      <div class="card dom f"><div class="ico">🌊</div><h3>More</h3><div class="n">2</div></div>
+      <div class="card dom f"><div class="ico">✈️</div><h3>Vzduch</h3><div class="n">3</div></div>
+      <div class="card dom f"><div class="ico">🛰️</div><h3>Vesmír</h3><div class="n">4</div></div>
+      <div class="card dom five f"><div class="ico">🌐</div><h3>Kyberpriestor</h3><div class="n">5</div></div>
+    </div>
+    <div class="strip f"><p class="big" style="margin:0">NATO uznalo kyberpriestor za samostatnú doménu operácií v roku 2016. Kartička <b>10 · GPS spoofing</b> ukazuje prečo: zásah v kyberpriestore „prepadne“ až do mora.</p></div>
+  </div>
+  <aside class="n">
+    <p class="ask">„Kde všade sa dá viesť konflikt?“ — nech tipujú, odhaľuj postupne.</p>
+    <p class="say">„Kyberpriestor je jediný, ktorý vytvoril človek — a prepája všetky ostatné. Bez siete nelieta letectvo, nefunguje GPS ani elektrina.“</p>
+    <p>Kartička 10 · GPS spoofing — falošný satelitný signál prebil ten skutočný.</p>
+  </aside>
+</section>
+
+<!-- ============ 10b · GPS SPOOFING: AKO ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Kartička 10 · ako kyberpriestor zasiahol more</span>
+    <div class="nums" style="margin:0 0 6px"><span class="chip"><b>10</b>GPS spoofing</span></div>
+    <p class="q">Ako GPS podvrhne polohu lodi<span class="qm">?</span></p>
+    <div class="grid3">
+      <div class="card f"><div class="tag">1 · ako GPS funguje</div><h3>Prijímač len počúva</h3><p>Družice ~20&nbsp;000&nbsp;km nad Zemou vysielajú presný čas a svoju polohu. Prijímač chytí aspoň <b>4 družice</b> a z rozdielov v čase príchodu vypočíta, kde je. Nič neposiela — <b>verí tomu, čo počuje</b>.</p></div>
+      <div class="card f"><div class="tag">2 · slabé miesto</div><h3>Slabý a nepodpísaný signál</h3><p>Signál z družíc je pri zemi <b>veľmi slabý</b>. Civilný GPS <b>nie je overovaný</b> — prijímač nevie skontrolovať, či signál naozaj prišiel z družice.</p></div>
+      <div class="card acc f"><div class="tag">3 · spoofing</div><h3>Silnejší falošný vysielač</h3><p>Vysielač na zemi napodobní signály družíc a je oveľa silnejší. Prijímač sa naň chytí a z podvrhnutých časov vypočíta polohu, ktorú si zvolil útočník. <b>Nehlási chybu</b> — ukazuje presnú, len nepravdivú polohu.</p></div>
+    </div>
+    <div class="strip f"><p style="margin:0;font-size:clamp(15px,1.6vw,21px);line-height:1.45"><b>Jún 2017, Čierne more:</b> kapitán si všimol, že GPS ho ukazuje na letisku Gelendžik, vyše 30&nbsp;km vo vnútrozemí. To isté nahlásilo asi <b>20 lodí</b> v oblasti — všetky „stáli“ na tom istom letisku. Chybu odhalil, lebo GPS porovnal s <b>radarom</b> a vlastným výpočtom polohy. Kto za tým bol, sa oficiálne nepotvrdilo; analytici to spájajú s ruskými systémami elektronického boja, ktoré takto chránia citlivé miesta pred dronmi a navigovanými zbraňami.</p></div>
+  </div>
+  <aside class="n">
+    <p class="ask">„Ako myslíte, že loď vie, kde je?“ · „Čo by ste museli urobiť, aby si GPS myslela, že je inde?“ — programátori na „silnejší falošný signál“ často prídu sami.</p>
+    <p class="say">„Prijímač nič neoveruje — len počúva a počíta. Kto vysiela hlasnejšie, ten vyhráva.“</p>
+  </aside>
+</section>
+
+<!-- ============ 10c · GPS SPOOFING: PREČO TO VADÍ ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Kartička 10 · prečo je to nebezpečné</span>
+    <div class="nums" style="margin:0 0 6px"><span class="chip"><b>10</b>GPS spoofing</span></div>
+    <p class="q">Falošná poloha = <span style="color:var(--accent)">problém na mori</span></p>
+    <div class="grid2">
+      <div class="card f"><div class="tag">elektronické mapy</div><h3>Loď si myslí, že je inde</h3><p>Navigácia na mostíku berie polohu z GPS → hrozí <b>zrážka</b> alebo <b>nabehnutie na plytčinu</b>.</p></div>
+      <div class="card f"><div class="tag">AIS</div><h3>Mýli aj ostatných</h3><p>Lode si cez AIS navzájom vysielajú svoju GPS polohu. Falošná poloha jednej lode zmätie <b>ostatné lode aj pobrežné centrá</b>.</p></div>
+    </div>
+    <div class="grid2">
+      <div class="card f"><div class="tag">triáda CIA</div><h3>Spoofing = <span style="color:var(--accent)">I</span>ntegrita</h3><p>Dáta o polohe prichádzajú, len sú falošné. Rušenie (<b>jamming</b>) — signál úplne zmizne — by bola <b>A</b>, dostupnosť.</p></div>
+      <div class="card warn f"><div class="tag" style="color:var(--warn)">na diskusiu</div><h3>Je to ešte kyberútok?</h3><p>Odborne je to skôr <b>elektronický boj</b> — útok cez rádiový signál, nikto nevnikol do siete. Cieľom sú však dáta a softvér, ktorý z nich počíta polohu. NATO preto kyberpriestor a elektromagnetické spektrum rieši spolu.</p></div>
+    </div>
+  </div>
+  <aside class="n">
+    <p class="ask">„Je to kyberútok, keď nikto nevnikol do žiadnej siete?“ — nechaj ich argumentovať; správna odpoveď nie je jednoznačná.</p>
+    <p class="say">„Zásah do signálu a dát sa prejavil až na lodiach v mori — preto hovoríme, že kyberpriestor prepája všetky ostatné domény.“</p>
+  </aside>
+</section>
+
+<!-- ============ 11 · VÝSTUPNÁ OTÁZKA ============ -->
+<section class="slide">
+  <div class="inner">
+    <span class="step">Výstupný lístok</span>
+    <p class="q">Ktorá kartička ťa najviac prekvapila — a prečo<span class="qm">?</span></p>
+    <p class="lead">Napíš na lístok 1–2 vety.</p>
+    <div class="strip f"><p class="big" style="margin:0">Nabudúce: <b>Keď to udrie.</b> Ste nemocnica, je 8:05 ráno a na obrazovkách svieti výkupné.</p></div>
+  </div>
+  <aside class="n">
+    <p>Lístky si odlož — dobrý materiál na úvod 2. hodiny („Najviac vás prekvapila kartička…“).</p>
+    <p>Kartičky 4 · Ryuk v Benešove a 7 · #MacronLeaks sa vrátia na 2. hodine.</p>
+  </aside>
+</section>
+
+<div id="notes"><div class="h">Poznámky pre učiteľku · N skryje</div><div id="notesBody"></div></div>
+<div class="bar"><span>KBZ · 04_01 · Kde sa bojuje?</span><span id="count"></span></div>
+
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0;
+  const root=document.documentElement;
+  try{const t=localStorage.getItem('kbz-theme'); if(t) root.dataset.theme=t;}catch(e){}
+  function frags(s){return [...s.querySelectorAll('.f')];}
+  function show(n,revealAll){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    frags(slides[i]).forEach(f=>f.classList.toggle('on',!!revealAll));
+    document.getElementById('count').textContent=(i+1)+' / '+slides.length;
+    document.getElementById('prog').style.width=((i+1)/slides.length*100)+'%';
+    const a=slides[i].querySelector('aside.n');
+    document.getElementById('notesBody').innerHTML=a?a.innerHTML:'<p>—</p>';
+    try{history.replaceState(null,'','#'+(i+1));}catch(e){}
+  }
+  function next(){const h=frags(slides[i]).find(f=>!f.classList.contains('on')); if(h) h.classList.add('on'); else if(i<slides.length-1) show(i+1,false);}
+  function prev(){const on=frags(slides[i]).filter(f=>f.classList.contains('on')); if(on.length) on[on.length-1].classList.remove('on'); else if(i>0) show(i-1,true);}
+  function toggleNotes(){document.getElementById('notes').classList.toggle('show');}
+  function toggleTheme(){
+    const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme=dark?'light':'dark';
+    try{localStorage.setItem('kbz-theme',root.dataset.theme);}catch(e){}
+  }
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown','Enter'].includes(e.key)){e.preventDefault();next();}
+    else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev();}
+    else if(e.key==='n'||e.key==='N') toggleNotes();
+    else if(e.key==='t'||e.key==='T') toggleTheme();
+    else if(e.key==='Home') show(0,false);
+    else if(e.key==='End') show(slides.length-1,true);
+  });
+  document.addEventListener('click',e=>{ if(e.target.closest('button,#notes,a')) return; next(); });
+  document.getElementById('notesBtn').onclick=toggleNotes;
+  document.getElementById('themeBtn').onclick=toggleTheme;
+  const h=parseInt((location.hash||'').slice(1),10);
+  show(h?h-1:0,false);
+})();
+</script>
+</body>
+</html>
