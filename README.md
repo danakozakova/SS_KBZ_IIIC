@@ -5,4 +5,4 @@ PHISHING: https://claude.ai/code/artifact/29206a19-ae0b-4ef0-b938-c92d6208a192
 
 DIGITÁLNA IDENTITA: https://claude.ai/artifact/1RBrUvDoq92otHPXaqSJSW
 
-KYBERNETICKÝ PRIESTOR: https://danakozakova.githubio/
+KYBERNETICKÝ PRIESTOR: https://danakozakova.github.io/04_01_KBZ_kde_sa_bojuje_premietanie_studenti.html
