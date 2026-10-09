@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analýza incidentov</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e9ecf2;--surface:#fff;--surface-2:#f3f5f9;--ink:#171a22;--muted:#5c6474;--faint:#8a91a1;--line:#d9dee7;--line-strong:#c3cad6;--accent:#0d7a80;--accent-ink:#0a5c61;--accent-soft:#d7ecec;--good:#1f9d57;--warn:#c9820a;--warn-soft:#fbefd6;--bad:#cf3d3d}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0e1017;--surface:#171b25;--surface-2:#1f2430;--ink:#e8ebf2;--muted:#a2aab9;--faint:#78808f;--line:#2a303d;--line-strong:#3a4252;--accent:#33b0b6;--accent-ink:#5ecacf;--accent-soft:#14343a;--warn-soft:#352914}}
+:root[data-theme="dark"]{--bg:#0e1017;--surface:#171b25;--surface-2:#1f2430;--ink:#e8ebf2;--muted:#a2aab9;--faint:#78808f;--line:#2a303d;--line-strong:#3a4252;--accent:#33b0b6;--accent-ink:#5ecacf;--accent-soft:#14343a;--warn-soft:#352914}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;line-height:1.55}
+.wrap{max-width:800px;margin:0 auto;padding:28px 16px 80px}
+h1,h2{font-family:'Archivo',sans-serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.1}
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.lock{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff}
+.lock svg{width:15px;height:15px}
+.lead{color:var(--muted);font-size:18px;margin:.5em 0 0}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:18px}
+.strip{border-left:6px solid var(--accent);background:var(--surface);padding:16px 20px;border-radius:0 12px 12px 0;margin-top:18px}
+.warn{background:var(--warn-soft);border-radius:12px;padding:14px 18px;margin-top:18px}
+ol,ul{padding-left:1.3em;margin:.4em 0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+th{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.nav a{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:4px 12px 4px 4px;color:var(--ink);text-decoration:none;font-size:14px}
+.nav b,.badge{display:inline-grid;place-items:center;min-width:28px;height:28px;border-radius:6px;background:var(--accent);color:#fff;font-family:'Archivo';font-weight:800}
+.inc{margin-top:40px;border-top:2px solid var(--line-strong);padding-top:22px}
+.inc-head{display:flex;gap:14px;align-items:center}
+.inc-head .badge{min-width:44px;height:44px;font-size:22px;border-radius:10px}
+.inc-head h2{font-size:28px}
+.meta{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--muted)}
+.report{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:16px;font-size:16.5px}
+.report p{margin:0}
+.s sup{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent-ink);background:var(--accent-soft);border-radius:4px;padding:0 4px;margin:0 3px 0 2px}
+.answers{background:var(--surface-2);border:1px dashed var(--line-strong);border-radius:14px;padding:18px 20px;margin-top:14px}
+.q{display:block;border:0;padding:0;margin:14px 0 0}
+.q legend,.q>span{display:block;font-weight:600;margin-bottom:6px;padding:0}
+.q label{display:inline-flex;gap:6px;align-items:center;margin:2px 16px 6px 0;font-weight:400}
+.pts{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;color:var(--accent-ink);background:var(--accent-soft);border-radius:4px;padding:1px 6px;margin-left:6px;white-space:nowrap}
+textarea,input[type=text]{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:10px 12px;resize:vertical}
+textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.name{margin-top:18px}
+.name span{display:block;font-weight:600;margin-bottom:6px}
+.btn{font:inherit;font-weight:600;background:var(--accent);color:#fff;border:0;border-radius:10px;padding:12px 18px;cursor:pointer}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line-strong)}
+.saved{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--faint);margin-left:10px}
+.theme{position:fixed;top:12px;right:14px;background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
+.submit{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+@media print{.theme,.submit,.nav{display:none}.answers{break-inside:auto}}
+</style>
+</head>
+<body>
+<button class="theme" id="themeBtn" title="Svetlý / tmavý režim">◐</button>
+<div class="wrap">
+  <div class="kicker"><span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>Kybernetická bezpečnosť · SPŠ IT Ignáca Gessaya</div>
+  <div class="strip">
+    <div class="tag">Z minulej hodiny</div>
+    Incident môže byť <b>kybernetický</b> (cieľom sú IT systémy: hardvér, softvér, siete, dáta, účty), <b>informačný</b> (cieľom je to, čo si ľudia myslia – za útokom je naratív) alebo <b>hybridný</b> (oboje). Nedôvera po výpadku je zvyčajne <b>následok</b>, nie cieľ. Delenie nie je ultimátne – rozhoduje celá správa o incidente.
+  </div>
+
+  <div class="card">
+    <div class="tag">Ako postupovať</div>
+    <ol>
+      <li>Pozorne si prečítaj správu. Vety sú očíslované – v odpovediach sa na ne odvolávaj (napr. „veta 4“).</li>
+      <li>Ku každému incidentu vyplň všetkých 7 otázok. Používaj odborné pojmy z hodín (vrstvy kyberpriestoru, triáda CIA, ransomvér, phishing, botnet, naratív…).</li>
+      <li>Hodnotí sa najmä <b>argumentácia</b>: nestačí napísať „hybridný“ – musíš ukázať, ktoré znaky to dokazujú.</li>
+      <li>Na konci si môžeš odpovede stiahnuť tlačidlom <b>Stiahnuť odpovede</b> – budú sa ti hodiť ako vzor na samostatnú časť.</li>
+    </ol>
+  </div>
+
+  <div class="warn"><b>Pozor:</b> odpovede sa priebežne ukladajú len v tomto prehliadači na tomto počítači. Pred zatvorením stránky si ich vždy <b>stiahni</b>.</div>
+
+  <label class="name"><span>Meno a priezvisko</span><input type="text" id="meno" name="meno" autocomplete="name"></label>
+  <div class="nav"><a href="#inc1"><b>1</b>Colonial Pipeline</a><a href="#inc2"><b>2</b>Ghostwriter</a></div>
+
+
+<section class="inc" id="inc1">
+  <div class="inc-head"><span class="badge">1</span><div><h2>Colonial Pipeline</h2><div class="meta">USA · máj 2021</div></div></div>
+  <div class="report"><div class="tag">Správa o incidente</div><p><span class="s"><sup>1</sup>Colonial Pipeline je najväčší produktovod na pohonné hmoty v USA; vedie z Texasu až do New Yorku a zásobuje približne 45 % paliva na východnom pobreží.</span> <span class="s"><sup>2</sup>6. mája 2021 útočníci zo siete firmy skopírovali takmer 100 GB dát.</span> <span class="s"><sup>3</sup>Do siete sa dostali cez účet do VPN, ktorý sa už nepoužíval, ale stále bol aktívny.</span> <span class="s"><sup>4</sup>Heslo k tomuto účtu predtým uniklo a účet nemal zapnuté viacfaktorové overenie (MFA).</span> <span class="s"><sup>5</sup>7. mája ráno zamestnanci našli na počítačoch správu o výkupnom; útočníci zašifrovali časť IT systémov firmy vrátane fakturačných.</span> <span class="s"><sup>6</sup>K útoku sa priznala kriminálna skupina DarkSide, ktorá svoj ransomvér prenajíma ďalším útočníkom (ransomware‑as‑a‑service).</span> <span class="s"><sup>7</sup>Systémy riadiace samotné čerpanie paliva zasiahnuté neboli, firma však preventívne zastavila celý produktovod – nevedela fakturovať a obávala sa šírenia útoku.</span> <span class="s"><sup>8</sup>Produktovod stál šesť dní, do 12. mája.</span> <span class="s"><sup>9</sup>Firma zaplatila výkupné 75 bitcoinov, vtedy približne 4,4 milióna dolárov.</span> <span class="s"><sup>10</sup>V juhovýchodných štátoch začali ľudia hromadne nakupovať benzín; v meste Charlotte bolo 11. mája bez paliva 71 % čerpacích staníc.</span> <span class="s"><sup>11</sup>Cena benzínu vystúpila na najvyššiu úroveň za šesť rokov a prezident 9. mája vyhlásil núdzový stav.</span> <span class="s"><sup>12</sup>FBI 7. júna zabavila 63,7 bitcoinu z vyplateného výkupného.</span> <span class="s"><sup>13</sup>Útok viedol k novému prezidentskému nariadeniu o kybernetickej bezpečnosti.</span></p></div>
+  <div class="answers">
+    <div class="tag">Tvoja analýza · max. 10 b</div>
+    <fieldset class="q"><legend>1. Ako incident klasifikuješ? <span class="pts">1 b</span></legend>
+      <label><input type="radio" name="i1_typ" value="kybernetický"> kybernetický</label>
+      <label><input type="radio" name="i1_typ" value="informačný"> informačný</label>
+      <label><input type="radio" name="i1_typ" value="hybridný"> hybridný</label>
+    </fieldset>
+    <label class="q"><span>2. Čo presne bolo zasiahnuté (systémy, dáta, ľudia)? Ktorá vrstva kyberpriestoru, ak nejaká? <span class="pts">1 b</span></span><textarea name="i1_zasiahnute" rows="3"></textarea></label>
+    <label class="q"><span>3. Aké techniky a nástroje útočník použil? Pomenuj ich odbornými pojmami. <span class="pts">2 b</span></span><textarea name="i1_techniky" rows="3"></textarea></label>
+    <label class="q"><span>4. Čo bolo <b>cieľom</b> útoku a čo boli <b>následky</b>? Rozlíš ich. <span class="pts">2 b</span></span><textarea name="i1_ciel" rows="4"></textarea></label>
+    <label class="q"><span>5. Je za útokom naratív (príbeh šírený cez siete, články, komentáre…), ktorý má ovplyvniť, čo si ľudia myslia? Ak áno, aký a ako sa šíril? <span class="pts">1 b</span></span><textarea name="i1_narativ" rows="3"></textarea></label>
+    <fieldset class="q"><legend>6. Ktoré vlastnosti triády CIA boli narušené? Ku každej zaškrtnutej napíš prečo. <span class="pts">1 b</span></legend>
+      <label><input type="checkbox" name="i1_cia_c" value="C"> C – dôvernosť</label>
+      <label><input type="checkbox" name="i1_cia_i" value="I"> I – integrita</label>
+      <label><input type="checkbox" name="i1_cia_a" value="A"> A – dostupnosť</label>
+      <textarea name="i1_cia" rows="2"></textarea>
+    </fieldset>
+    <label class="q"><span>7. Odôvodni svoju klasifikáciu (aspoň 5 viet). Odvolávaj sa na čísla viet zo správy. Uveď aj, čo by mohlo hovoriť <b>pre inú</b> klasifikáciu a prečo si sa pre ňu nerozhodol/a. <span class="pts">2 b</span></span><textarea name="i1_odov" rows="7"></textarea></label>
+  </div>
+</section>
+<section class="inc" id="inc2">
+  <div class="inc-head"><span class="badge">2</span><div><h2>Ghostwriter</h2><div class="meta">Pobaltie, Poľsko, Nemecko · 2017–2021</div></div></div>
+  <div class="report"><div class="tag">Správa o incidente</div><p><span class="s"><sup>1</sup>Od roku 2017 prebiehala v Litve, Lotyšsku a Poľsku séria incidentov, ktorú bezpečnostná firma FireEye (Mandiant) nazvala Ghostwriter.</span> <span class="s"><sup>2</sup>Útočníci posielali phishingové e‑maily novinárom, politikom a úradníkom a kradli im prihlasovacie údaje.</span> <span class="s"><sup>3</sup>Takto získali prístup do redakčných systémov spravodajských webov a do účtov politikov na sociálnych sieťach.</span> <span class="s"><sup>4</sup>Cez napadnuté weby zverejňovali vymyslené články, ktoré vyzerali ako bežné správy daného média.</span> <span class="s"><sup>5</sup>Cez prevzaté účty politikov šírili falošné vyhlásenia a sfalšované dokumenty.</span> <span class="s"><sup>6</sup>Jedným z príkladov bol sfalšovaný list generálneho tajomníka NATO litovskému ministerstvu obrany o sťahovaní vojakov z Litvy.</span> <span class="s"><sup>7</sup>Obsah opakovane útočil na prítomnosť vojsk NATO a USA v regióne a na dôveru ľudí k vlastnej vláde.</span> <span class="s"><sup>8</sup>Falzifikáty potom zdieľali ďalšie účty, aby sa dostali k čo najväčšiemu publiku.</span> <span class="s"><sup>9</sup>V lete 2021 sa útoky rozšírili do Nemecka, kde pred voľbami cielili na poslancov Bundestagu a krajinských parlamentov.</span> <span class="s"><sup>10</sup>Analytici skupinu za útokmi označili UNC1151 a v roku 2021 ju spojili s bieloruskou vládou.</span> <span class="s"><sup>11</sup>Nemecko a 24. septembra 2021 aj Európska únia pripísali zodpovednosť Rusku.</span> <span class="s"><sup>12</sup>Rada EÚ vyhlásila, že tieto aktivity sú v rozpore s normami zodpovedného správania štátov v kyberpriestore.</span></p></div>
+  <div class="answers">
+    <div class="tag">Tvoja analýza · max. 10 b</div>
+    <fieldset class="q"><legend>1. Ako incident klasifikuješ? <span class="pts">1 b</span></legend>
+      <label><input type="radio" name="i2_typ" value="kybernetický"> kybernetický</label>
+      <label><input type="radio" name="i2_typ" value="informačný"> informačný</label>
+      <label><input type="radio" name="i2_typ" value="hybridný"> hybridný</label>
+    </fieldset>
+    <label class="q"><span>2. Čo presne bolo zasiahnuté (systémy, dáta, ľudia)? Ktorá vrstva kyberpriestoru, ak nejaká? <span class="pts">1 b</span></span><textarea name="i2_zasiahnute" rows="3"></textarea></label>
+    <label class="q"><span>3. Aké techniky a nástroje útočník použil? Pomenuj ich odbornými pojmami. <span class="pts">2 b</span></span><textarea name="i2_techniky" rows="3"></textarea></label>
+    <label class="q"><span>4. Čo bolo <b>cieľom</b> útoku a čo boli <b>následky</b>? Rozlíš ich. <span class="pts">2 b</span></span><textarea name="i2_ciel" rows="4"></textarea></label>
+    <label class="q"><span>5. Je za útokom naratív (príbeh šírený cez siete, články, komentáre…), ktorý má ovplyvniť, čo si ľudia myslia? Ak áno, aký a ako sa šíril? <span class="pts">1 b</span></span><textarea name="i2_narativ" rows="3"></textarea></label>
+    <fieldset class="q"><legend>6. Ktoré vlastnosti triády CIA boli narušené? Ku každej zaškrtnutej napíš prečo. <span class="pts">1 b</span></legend>
+      <label><input type="checkbox" name="i2_cia_c" value="C"> C – dôvernosť</label>
+      <label><input type="checkbox" name="i2_cia_i" value="I"> I – integrita</label>
+      <label><input type="checkbox" name="i2_cia_a" value="A"> A – dostupnosť</label>
+      <textarea name="i2_cia" rows="2"></textarea>
+    </fieldset>
+    <label class="q"><span>7. Odôvodni svoju klasifikáciu (aspoň 5 viet). Odvolávaj sa na čísla viet zo správy. Uveď aj, čo by mohlo hovoriť <b>pre inú</b> klasifikáciu a prečo si sa pre ňu nerozhodol/a. <span class="pts">2 b</span></span><textarea name="i2_odov" rows="7"></textarea></label>
+  </div>
+</section>
+
+  <div class="card" style="margin-top:40px">
+    <div class="tag">Odovzdanie</div>
+    <p style="margin:0">Skontroluj, či máš vyplnené všetky otázky pri všetkých incidentoch (2). Potom stiahni súbor s odpoveďami a odovzdaj ho.</p>
+    <div class="submit"><button class="btn" id="dl">Stiahnuť odpovede</button><button class="btn ghost" onclick="window.print()">Vytlačiť / PDF</button><span class="saved" id="saved"></span></div>
+  </div>
+</div>
+<script>
+(function(){
+  const KEY='kbz-04_P-cast1';
+  const root=document.documentElement;
+  try{const t=localStorage.getItem('kbz-theme'); if(t) root.dataset.theme=t;}catch(e){}
+  document.getElementById('themeBtn').onclick=()=>{const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;root.dataset.theme=dark?'light':'dark';try{localStorage.setItem('kbz-theme',root.dataset.theme)}catch(e){}};
+  const fields=()=>[...document.querySelectorAll('input[name],textarea[name]')];
+  function save(){const d={};fields().forEach(f=>{if(f.type==='radio'){if(f.checked)d[f.name]=f.value}else if(f.type==='checkbox'){d[f.name]=f.checked}else d[f.name]=f.value});
+    try{localStorage.setItem(KEY,JSON.stringify(d));document.getElementById('saved').textContent='uložené v prehliadači '+new Date().toLocaleTimeString('sk-SK')}catch(e){}}
+  function load(){let d={};try{d=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+    fields().forEach(f=>{if(!(f.name in d))return;if(f.type==='radio')f.checked=(d[f.name]===f.value);else if(f.type==='checkbox')f.checked=!!d[f.name];else f.value=d[f.name]})}
+  load(); document.addEventListener('input',save); document.addEventListener('change',save);
+  document.getElementById('dl').onclick=function(){
+    const v=n=>{const el=document.querySelector('[name="'+n+'"]');return el?el.value.trim():''};
+    const meno=v('meno')||'bez_mena';
+    let out='KBZ · 04_P Analýza incidentov – 1. časť (spoločne)\nMeno: '+meno+'\nDátum: '+new Date().toLocaleString('sk-SK')+'\n';
+    document.querySelectorAll('section.inc').forEach((s,ix)=>{
+      const p='i'+(ix+1), title=s.querySelector('h2').textContent;
+      const typ=(s.querySelector('input[name="'+p+'_typ"]:checked')||{}).value||'—';
+      const cia=['c','i','a'].filter(x=>s.querySelector('[name="'+p+'_cia_'+x+'"]').checked).map(x=>x.toUpperCase()).join(', ')||'—';
+      out+='\n==============================\n'+(ix+1)+'. '+title+'\n==============================\n';
+      out+='1. Klasifikácia: '+typ+'\n';
+      out+='\n2. Zasiahnuté / vrstva:\n'+(v(p+'_zasiahnute')||'—')+'\n';
+      out+='\n3. Techniky a nástroje:\n'+(v(p+'_techniky')||'—')+'\n';
+      out+='\n4. Cieľ vs. následky:\n'+(v(p+'_ciel')||'—')+'\n';
+      out+='\n5. Naratív:\n'+(v(p+'_narativ')||'—')+'\n';
+      out+='\n6. CIA: '+cia+'\n'+(v(p+'_cia')||'—')+'\n';
+      out+='\n7. Odôvodnenie:\n'+(v(p+'_odov')||'—')+'\n';
+    });
+    const blob=new Blob([out],{type:'text/plain;charset=utf-8'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download='KBZ_04_P_cast1_'+meno.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'_')+'.txt';
+    document.body.appendChild(a);a.click();a.remove();
+  };
+})();
+</script>
+</body>
+</html>
