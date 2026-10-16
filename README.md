@@ -10,4 +10,4 @@ KYBERNETICKÝ PRIESTOR:
 - https://danakozakova.github.io/SS_KBZ_IIIC/04_01_KBZ_kde_sa_bojuje_premietanie_studenti.html
 - https://danakozakova.github.io/SS_KBZ_IIIC/04_P_KBZ_analyza_incidentov_cast1_spolocne_zadanie.html
 
-[Odovzdať vypracované] (https://spstv-my.sharepoint.com/:f:/g/personal/dana_kozakova_strednaskolats_sk/IgCdRI3JTT7zTLn79X5DbygJAThcamdI-CsGTpcNnDQjGfg)
+[Odovzdať vypracované](https://spstv-my.sharepoint.com/:f:/g/personal/dana_kozakova_strednaskolats_sk/IgCdRI3JTT7zTLn79X5DbygJAThcamdI-CsGTpcNnDQjGfg)
