@@ -1,8 +1,6 @@
 # Cookies — pracovný list
 
-Meno: ............................................  Dátum: ..................
-
-Dnes si len pozrieme, aké cookies má web uložené a koľko serverov zavolá jedna stránka. **Nič nemeníme ani nemažeme.** Hodnoty (stĺpec *Value*) neodfotuj a nezdieľaj.
+Dnes si len pozrieme, aké cookies má web uložené a koľko serverov zavolá jedna stránka. **Nič nemeníme ani nemažeme.** Hodnoty (stĺpec *Value*) nefoť a nezdieľaj.
 
 ---
 
