@@ -445,23 +445,6 @@
       <span class="ar">→</span>
     </a>
   </section>
-
-  <!-- ============ KĽÚČ PRE UČITEĽA ============ -->
-  <details class="key">
-    <summary>Kľúč pre učiteľa</summary>
-    <p><strong>Zamysli sa (prepísanie hodnoty v DevTools):</strong> stránka zobrazí <em>prepísané</em> meno. Záver: hodnota cookie je plne v rukách používateľa, teda nedokazuje, kto to je.</p>
-    <p><strong>Overenie porozumenia:</strong></p>
-    <ul>
-      <li>Nové meno sa <em>neuloží ako druhá cookie</em> — rovnaký názov + cesta prepíše pôvodnú.</li>
-      <li>Po obnovení beží <code>showSavedName()</code>, ktorá znova prečíta cookie a poskladá zobrazenie.</li>
-      <li>Po zmazaní cookie v DevTools <code>readCookie</code> vráti <code>null</code> → predvolená správa.</li>
-      <li>Zmenená hodnota sa prečíta „ako je" — ukážka, že údaje v prehliadači sú upraviteľné.</li>
-    </ul>
-    <p><strong>Úprava B (max-age=20):</strong> po uplynutí platnosti sa už zobrazený pozdrav sám nestratí — kód nebeží stále, stav sa prepočíta až pri ďalšom načítaní / volaní <code>showSavedName()</code>.</p>
-    <p><strong>Úprava C (premenovanie):</strong> častá chyba — zmenia názov len na 1–2 z 3 miest; ukladá a číta sa potom iný názov a stránka „nič si nepamätá". Dobrá príležitosť na čítanie chýb.</p>
-    <p><strong>Pozn.:</strong> ak si žiaci súbor vytvárajú sami a Windows skrýva prípony, ustráž <code>index.html</code> vs. <code>index.html.txt</code>. <code>SameSite=Lax</code> necháme pripravené, nevysvetľujeme doň.</p>
-  </details>
-
 </div>
 
 <script>
