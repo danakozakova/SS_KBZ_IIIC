@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="sk" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vlastná cookie — KBZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#e9ecf2; --surface:#ffffff; --surface-2:#f3f5f9;
+    --ink:#171a22; --muted:#5c6474; --faint:#8a91a1;
+    --line:#d9dee7; --line-strong:#c3cad6;
+    --accent:#0d7a80; --accent-ink:#0a5c61; --accent-soft:#d7ecec;
+    --good:#1f9d57; --good-soft:#e1f4e9;
+    --warn:#c9820a; --warn-soft:#faf0d8;
+    --bad:#cf3d3d; --bad-soft:#fbe4e4;
+    --radius:14px; --shadow:0 1px 2px rgba(20,25,40,.06),0 6px 20px rgba(20,25,40,.05);
+  }
+  html[data-theme="dark"]{
+    --bg:#0e1017; --surface:#171b25; --surface-2:#1f2430;
+    --ink:#e8ebf2; --muted:#a2aab9; --faint:#6f7786;
+    --line:#2a3040; --line-strong:#3a4252;
+    --accent:#33b0b6; --accent-ink:#5ecacf; --accent-soft:#14343a;
+    --good:#3fc27a; --good-soft:#12301f;
+    --warn:#e0a63a; --warn-soft:#352a12;
+    --bad:#e86767; --bad-soft:#3a1c1c;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:28px 18px 80px}
+  h1,h2,h3{font-family:"Archivo",sans-serif; text-wrap:balance; line-height:1.18; margin:0}
+  h1{font-size:2rem; font-weight:800; letter-spacing:-.01em}
+  h2{font-size:1.4rem; font-weight:700; margin:0}
+  h3{font-size:1.08rem; font-weight:700}
+  p{margin:.5em 0}
+  code,kbd{font-family:"IBM Plex Mono",monospace; font-size:.92em}
+  kbd{background:var(--surface-2); border:1px solid var(--line-strong); border-bottom-width:2px;
+    border-radius:6px; padding:.05em .45em; font-size:.82em; white-space:nowrap}
+  .kicker{font-family:"IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.12em;
+    font-size:.72rem; color:var(--accent-ink); font-weight:600}
+  .lead{color:var(--muted); font-size:1.08rem; margin-top:.4em}
+
+  /* header */
+  .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:22px}
+  .badge-lock{display:inline-flex; align-items:center; gap:9px; font-family:"IBM Plex Mono",monospace;
+    font-size:.74rem; letter-spacing:.04em; color:var(--muted)}
+  .badge-lock .lk{width:30px;height:30px;border-radius:9px;background:var(--accent-soft);
+    display:grid;place-items:center;color:var(--accent-ink)}
+  .toggle{appearance:none;border:1px solid var(--line-strong);background:var(--surface);
+    color:var(--muted);border-radius:999px;padding:7px 13px;cursor:pointer;font:inherit;font-size:.82rem;
+    display:inline-flex;align-items:center;gap:7px}
+  .toggle:hover{color:var(--ink);border-color:var(--accent)}
+
+  /* recap strip */
+  .recap{border-left:4px solid var(--accent); background:var(--surface);
+    border-radius:0 var(--radius) var(--radius) 0; padding:16px 18px; box-shadow:var(--shadow); margin:22px 0}
+  .recap .tag{font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.1em;
+    font-size:.68rem;color:var(--accent-ink);font-weight:600}
+  .recap p{margin:.35em 0 0}
+
+  /* task cards */
+  .task{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:20px 20px 18px; margin:16px 0; position:relative}
+  .task .head{display:flex; gap:14px; align-items:flex-start; margin-bottom:6px}
+  .num{flex:0 0 auto; width:38px;height:38px;border-radius:10px;background:var(--accent);color:#fff;
+    font-family:"Archivo",sans-serif;font-weight:700;font-size:1.15rem;display:grid;place-items:center}
+  .task .why{color:var(--faint); font-size:.86rem; margin:.1em 0 0}
+  .task ol,.task ul{margin:.6em 0 .2em; padding-left:1.3em}
+  .task li{margin:.3em 0}
+
+  /* code block */
+  .code{position:relative; margin:.8em 0}
+  .code pre{margin:0; background:#12151d; color:#e8ebf2; border-radius:10px; padding:15px 15px;
+    overflow:auto; font-family:"IBM Plex Mono",monospace; font-size:.82rem; line-height:1.55; border:1px solid #232838}
+  html[data-theme="dark"] .code pre{background:#0b0d13}
+  .code .copy{position:absolute; top:8px; right:8px; border:1px solid #3a4252; background:#1f2430;
+    color:#cfd6e4; border-radius:7px; padding:4px 10px; font:inherit; font-size:.72rem; cursor:pointer}
+  .code .copy:hover{border-color:var(--accent); color:#fff}
+  .code .copy.ok{color:var(--good); border-color:var(--good)}
+  .fname{font-family:"IBM Plex Mono",monospace; font-size:.72rem; color:var(--faint);
+    display:block; margin-bottom:4px; text-transform:none; letter-spacing:0}
+
+  /* callouts */
+  .call{display:flex; gap:12px; border-radius:12px; padding:13px 15px; margin:14px 0; font-size:.95rem}
+  .call .ico{flex:0 0 auto; font-size:1.1rem; line-height:1.4}
+  .call.warn{background:var(--warn-soft); border:1px solid var(--warn)}
+  .call.safe{background:var(--good-soft); border:1px solid var(--good)}
+  .call strong{font-weight:600}
+
+  /* think box */
+  .think{border:2px dashed var(--line-strong); border-radius:12px; padding:15px 17px; margin:16px 0; background:transparent}
+  .think .tag{font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.1em;
+    font-size:.68rem;color:var(--muted);font-weight:600; display:block; margin-bottom:4px}
+
+  /* tweak cards */
+  .tweak{border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:0 12px 12px 0;
+    background:var(--surface-2); padding:14px 16px; margin:12px 0}
+  .tweak h3{font-size:1rem; margin-bottom:2px}
+  .tweak .obs{color:var(--muted); font-size:.9rem; margin-top:.5em}
+  .tweak .obs b{color:var(--ink); font-weight:600}
+
+  /* table */
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:.9rem}
+  th,td{text-align:left; padding:9px 11px; border:1px solid var(--line); vertical-align:top}
+  th{background:var(--surface-2); font-weight:600; font-family:"Archivo",sans-serif}
+
+  /* resources */
+  .res{display:flex; align-items:center; justify-content:space-between; gap:10px; text-decoration:none;
+    color:inherit; background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:13px 16px; margin:9px 0; box-shadow:var(--shadow)}
+  .res:hover{border-color:var(--accent)}
+  .res .t{font-weight:600}
+  .res .d{font-family:"IBM Plex Mono",monospace; font-size:.76rem; color:var(--faint)}
+  .res .ar{color:var(--accent); font-weight:700}
+
+  /* teacher key */
+  details.key{background:var(--accent-soft); border:1px solid var(--accent); border-radius:12px; padding:4px 16px; margin:22px 0}
+  details.key summary{cursor:pointer; font-family:"Archivo",sans-serif; font-weight:700; padding:11px 0; color:var(--accent-ink)}
+  details.key[open] summary{margin-bottom:6px}
+  details.key ul{margin:.3em 0 .8em; padding-left:1.2em}
+
+  .pool h3{margin-top:16px}
+  .pill{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.05em;
+    text-transform:uppercase; padding:2px 8px; border-radius:999px; border:1px solid var(--line-strong);
+    color:var(--muted); margin-left:6px; vertical-align:middle}
+
+  section{margin-top:34px}
+  .divider{height:1px; background:var(--line); border:0; margin:34px 0}
+  hr.soft{height:1px;background:var(--line);border:0;margin:18px 0}
+  .muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="badge-lock">
+      <span class="lk" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      </span>
+      <span>Kybernetická bezpečnosť · SPŠ IT Ignáca Gessaya</span>
+    </div>
+    <button class="toggle" id="themeToggle" type="button" aria-label="Prepnúť tému">
+      <span id="themeIcon">🌙</span><span id="themeLabel">Tmavý</span>
+    </button>
+  </div>
+
+  <span class="kicker">Cookies · Aktivita 2</span>
+  <h1>Vlastná cookie: stránka, ktorá si ťa zapamätá</h1>
+  <p class="lead">Vyrobíš si malú stránku, ktorá si zapamätá tvoje meno aj po obnovení. Spustíš ju cez Live Server, nájdeš cookie v DevTools a sám jej kód trochu upravíš.</p>
+
+  <div class="recap">
+    <span class="tag">Z minula · Nadväzuje</span>
+    <p>Minule sme sa iba <strong>pozerali</strong> na cookies cudzích webov v DevTools — nič sme nemenili. Dnes si <strong>vyrobíš vlastnú</strong> cookie, uvidíš, ako vzniká a zaniká, a presvedčíš sa, že je to len obyčajný <strong>upraviteľný údaj</strong> v prehliadači.</p>
+  </div>
+
+  <div class="call safe">
+    <span class="ico">🎯</span>
+    <div><strong>Cieľ hodiny:</strong> nejde o to naučiť sa celý JavaScript naspamäť. Dnes stačí stránku <strong>spustiť, vyskúšať</strong> a vedieť v nej spraviť <strong>pár drobných zmien</strong> — a hlavne rozumieť, čo sa pri nich s cookie deje.</div>
+  </div>
+
+  <!-- ============ PRAKTICKÁ ČASŤ ============ -->
+  <section>
+    <h2>Praktická časť</h2>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">1</div>
+        <div>
+          <h3>Priprav si súbor vo VS Code</h3>
+          <p class="why">prečo — stránka musí existovať ako súbor, ktorý vieme spustiť</p>
+        </div>
+      </div>
+      <ol>
+        <li>Máš priečinok <code>cookie-demo</code> a v ňom súbor <code>index.html</code> (dostal si ho od učiteľky, alebo si ho vytvor).</li>
+        <li>Otvor priečinok vo <strong>VS Code</strong>: <kbd>File</kbd> → <kbd>Open Folder…</kbd> → vyber <code>cookie-demo</code>.</li>
+        <li>Ak si súbor vytváraš sám, skontroluj, že sa volá presne <code>index.html</code> — <strong>nie</strong> <code>index.html.txt</code>.</li>
+      </ol>
+      <p class="muted" style="font-size:.9rem">Toto je kód, ktorý v súbore je. Dnes ho <strong>netreba</strong> rozoberať po riadkoch — iba spustiť a neskôr na pár miestach upraviť.</p>
+      <div class="code">
+        <span class="fname">index.html</span>
+        <button class="copy" type="button">Kopírovať</button>
+<pre><code>&lt;!doctype html&gt;
+&lt;html lang="sk"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Ukážka cookies&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Cookie si zapamätá meno&lt;/h1&gt;
+
+  &lt;label for="name"&gt;Vaše meno:&lt;/label&gt;
+  &lt;input id="name" type="text"&gt;
+  &lt;button id="save"&gt;Zapamätať&lt;/button&gt;
+  &lt;button id="forget"&gt;Zabudnúť&lt;/button&gt;
+
+  &lt;p id="message"&gt;Zatiaľ nemám uložené meno.&lt;/p&gt;
+
+  &lt;script&gt;
+    const nameInput = document.querySelector("#name");
+    const message = document.querySelector("#message");
+
+    function readCookie(name) {
+      const row = document.cookie
+        .split("; ")
+        .find(item =&gt; item.startsWith(name + "="));
+
+      return row ? decodeURIComponent(row.split("=").slice(1).join("=")) : null;
+    }
+
+    function showSavedName() {
+      const savedName = readCookie("student_name");
+
+      if (savedName) {
+        message.textContent = `Ahoj, ${savedName}! Toto meno som načítal z cookie.`;
+        nameInput.value = savedName;
+      } else {
+        message.textContent = "Zatiaľ nemám uložené meno.";
+      }
+    }
+
+    document.querySelector("#save").addEventListener("click", () =&gt; {
+      const name = nameInput.value.trim();
+
+      if (!name) {
+        message.textContent = "Najprv zadaj meno.";
+        return;
+      }
+
+      document.cookie =
+        `student_name=${encodeURIComponent(name)}; max-age=600; path=/; SameSite=Lax`;
+
+      showSavedName();
+    });
+
+    document.querySelector("#forget").addEventListener("click", () =&gt; {
+      document.cookie =
+        "student_name=; max-age=0; path=/; SameSite=Lax";
+
+      nameInput.value = "";
+      showSavedName();
+    });
+
+    showSavedName();
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">2</div>
+        <div>
+          <h3>Spusti stránku cez Live Server</h3>
+          <p class="why">prečo — cookies sa správne skúšajú na adrese <code>localhost</code>, nie dvojklikom cez <code>file://</code></p>
+        </div>
+      </div>
+      <ol>
+        <li>V pravom dolnom rohu VS Code klikni na <kbd>Go Live</kbd>. (Alebo: pravý klik na <code>index.html</code> → <kbd>Open with Live Server</kbd>.)</li>
+        <li>Otvorí sa prehliadač na adrese ako <code>http://127.0.0.1:5500/</code> (port môže byť aj iný).</li>
+        <li>Mal by si vidieť nadpis <em>„Cookie si zapamätá meno"</em>.</li>
+      </ol>
+      <div class="call warn">
+        <span class="ico">⚠️</span>
+        <div><strong>Nevidíš „Go Live"?</strong> Treba doplnok <strong>Live Server</strong> (autor Ritwick Dey). V ľavom paneli <kbd>Extensions</kbd> ho nájdi a nainštaluj, potom skús znova.</div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">3</div>
+        <div>
+          <h3>Vyskúšaj, čo si stránka pamätá</h3>
+          <p class="why">prečo — uvidíš rozdiel medzi „zobrazené na stránke" a „uložené v cookie"</p>
+        </div>
+      </div>
+      <ol>
+        <li>Zadaj meno a stlač <kbd>Zapamätať</kbd> — zobrazí sa pozdrav.</li>
+        <li>Obnov stránku klávesom <kbd>F5</kbd>. Meno aj pozdrav <strong>zostanú</strong>.</li>
+        <li>Stlač <kbd>Zabudnúť</kbd> — cookie sa zmaže a stránka sa vráti do pôvodného stavu.</li>
+      </ol>
+      <div class="call safe">
+        <span class="ico">💡</span>
+        <div>Pozdrav prežije obnovenie preto, že meno nie je len napísané na obrazovke — je <strong>uložené v cookie</strong> a stránka si ho pri každom načítaní znova prečíta.</div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">4</div>
+        <div>
+          <h3>Nájdi svoju cookie v DevTools</h3>
+          <p class="why">prečo — rovnaký nástroj ako minule, teraz na vlastnej cookie</p>
+        </div>
+      </div>
+      <ol>
+        <li>Stlač <kbd>F12</kbd>.</li>
+        <li>Otvor kartu <kbd>Application</kbd> (vo Firefoxe <kbd>Storage</kbd>).</li>
+        <li>Vľavo rozbaľ <strong>Cookies</strong> a klikni na položku <code>http://127.0.0.1:5500</code> (prípadne <code>localhost</code>).</li>
+        <li>Po kliknutí na <kbd>Zapamätať</kbd> nájdi cookie <code>student_name</code>. Pozri si jej <strong>hodnotu, cestu (Path) a platnosť (Expires)</strong>.</li>
+      </ol>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ UPRAV KÓD ============ -->
+  <section>
+    <h2>Uprav kód — tri drobné zmeny</h2>
+    <p class="muted">V každej úprave zmeníš <strong>jeden kúsok</strong>, uložíš (<kbd>Ctrl</kbd>+<kbd>S</kbd>), obnovíš stránku a sleduješ, čo sa stane. Nič viac netreba.</p>
+
+    <div class="tweak">
+      <h3>Úprava A — zmeň text pozdravu</h3>
+      <p>Nájdi riadok s pozdravom a prepíš text v spätných apostrofoch (nechaj <code>${savedName}</code> na mieste):</p>
+      <div class="code">
+        <button class="copy" type="button">Kopírovať</button>
+<pre><code>message.textContent = `Vitaj späť, ${savedName}! 🎉`;</code></pre>
+      </div>
+      <p class="obs"><b>Sleduj:</b> zmenil sa len text na obrazovke. V DevTools je <b>hodnota cookie rovnaká</b> — menili sme zobrazenie, nie uložený údaj.</p>
+    </div>
+
+    <div class="tweak">
+      <h3>Úprava B — skráť platnosť cookie</h3>
+      <p>V tlačidle <em>Zapamätať</em> zmeň <code>max-age=600</code> na <code>max-age=20</code> (20 sekúnd):</p>
+      <div class="code">
+        <button class="copy" type="button">Kopírovať</button>
+<pre><code>document.cookie =
+  `student_name=${encodeURIComponent(name)}; max-age=20; path=/; SameSite=Lax`;</code></pre>
+      </div>
+      <p>Ulož meno, počkaj ~25 sekúnd a <strong>obnov</strong> stránku.</p>
+      <p class="obs"><b>Sleduj:</b> cookie po 20 sekundách <b>zanikne</b> a meno sa už nenačíta. Platnosť si určuješ ty v kóde.</p>
+    </div>
+
+    <div class="tweak">
+      <h3>Úprava C — premenuj cookie</h3>
+      <p>Nahraď <strong>všetky tri</strong> výskyty názvu <code>student_name</code> novým názvom, napr. <code>prezyvka</code> (v <code>readCookie(...)</code>, pri ukladaní aj pri mazaní).</p>
+      <div class="call warn">
+        <span class="ico">⚠️</span>
+        <div>Musíš ho zmeniť <strong>na všetkých troch miestach rovnako</strong>. Ak jedno zabudneš, stránka bude ukladať pod jedným názvom a čítať pod iným — a nič si nezapamätá.</div>
+      </div>
+      <p class="obs"><b>Sleduj:</b> v DevTools sa teraz objaví cookie <b>prezyvka</b>. Názov cookie je len dohoda v kóde.</p>
+    </div>
+
+    <div class="think">
+      <span class="tag">Zamysli sa</span>
+      <p>Otvor DevTools, klikni na hodnotu cookie <code>student_name</code>, <strong>prepíš ju</strong> na iné meno a obnov stránku. Čo stránka zobrazí? Čo to hovorí o tom, či sa dá menu v cookie veriť?</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ OVERENIE POROZUMENIA ============ -->
+  <section>
+    <h2>Over si, že tomu rozumieš</h2>
+    <p class="muted">Skús tieto pokusy a ku každému jednou vetou povedz, prečo to tak dopadlo.</p>
+    <table>
+      <thead><tr><th>Pokus</th><th>Čo máš vysvetliť</th></tr></thead>
+      <tbody>
+        <tr><td>Zmeníš meno a znova ho uložíš.</td><td>Existujúca cookie sa <strong>aktualizuje</strong> (neprribudne druhá).</td></tr>
+        <tr><td>Obnovíš stránku.</td><td>Zobrazenie sa <strong>vytvorí nanovo</strong> z uloženej hodnoty.</td></tr>
+        <tr><td>V DevTools cookie zmažeš a obnovíš stránku.</td><td>Bez cookie sa meno <strong>nenájde</strong>.</td></tr>
+        <tr><td>V DevTools zmeníš hodnotu cookie a obnovíš stránku.</td><td>Stránka použije <strong>zmenený údaj</strong> — používateľ ho vie upraviť.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ ZHRNUTIE / OBRANA ============ -->
+  <section>
+    <h2>Čo si z toho odniesť</h2>
+    <div class="call safe">
+      <span class="ico">✅</span>
+      <div>
+        <strong>Cookie je len uložený údaj</strong>, ktorý si stránka pri načítaní znova prečíta. Vieš, že je niečo iné <em>uložiť údaj</em>, niečo iné ho <em>prečítať</em> a niečo iné <em>zobraziť</em>.
+      </div>
+    </div>
+    <div class="call warn">
+      <span class="ico">🛡️</span>
+      <div>
+        Meno v tejto cookie <strong>nie je dôkaz identity</strong> — videl si, že ho ktokoľvek v prehliadači prepíše. Cookie vytvorená JavaScriptom preto <strong>nie je vhodná na heslá ani prihlásenie</strong>. Toto je učebná ukážka, nie prihlasovací systém.
+      </div>
+    </div>
+    <p class="muted">Práve preto existuje príznak <strong>HttpOnly</strong> (cookie, ktorú JavaScript neprečíta) — na to sa pozrieme nabudúce.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ ZÁSOBNÍK ÚLOH ============ -->
+  <section class="pool">
+    <h2>Ďalšie úlohy a projekty</h2>
+
+    <h3>Rýchle na hodinu</h3>
+    <ul>
+      <li>Zmeň predvolenú správu <em>„Zatiaľ nemám uložené meno."</em> na vlastnú.</li>
+      <li>Premenuj tlačidlá <em>Zapamätať</em> / <em>Zabudnúť</em> (úprava v HTML).</li>
+    </ul>
+
+    <h3>Technické <span class="pill">náročnejšie</span></h3>
+    <ul>
+      <li>Pridaj druhé políčko a druhú cookie — napr. obľúbenú <strong>farbu</strong> — a po načítaní ňou zafarbi pozadie stránky.</li>
+      <li>Zobraz na stránke aj surový obsah <code>document.cookie</code>, nech vidíš všetky cookies naraz.</li>
+    </ul>
+
+    <h3>Diskusia <span class="pill">skupinové</span></h3>
+    <ul>
+      <li>Kde všade je užitočné, že si stránka „pamätá" (jazyk, košík, tmavý režim)? A kde by to bolo <strong>nepríjemné</strong>?</li>
+    </ul>
+
+    <h3>Na známku <span class="pill">na známku</span></h3>
+    <ul>
+      <li>Krátky zápis: vysvetli rozdiel medzi <em>uložiť</em>, <em>prečítať</em> a <em>zobraziť</em> údaj na príklade tejto stránky, a prečo menu v cookie nemožno veriť.</li>
+    </ul>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ AK SA NIEČO POKAZÍ ============ -->
+  <section>
+    <h2>Ak sa niečo pokazí</h2>
+    <ul>
+      <li><strong>Stránka sa nenačíta:</strong> otvorený musí byť priečinok s <code>index.html</code> a Live Server musí bežať (vpravo dole svieti port).</li>
+      <li><strong>Zmena sa neprejaví:</strong> ulož súbor (<kbd>Ctrl</kbd>+<kbd>S</kbd>) a sprav tvrdé obnovenie <kbd>Ctrl</kbd>+<kbd>F5</kbd>.</li>
+      <li><strong>Port 5500 je obsadený:</strong> Live Server použije iný (napr. 5501) — pozri adresu v prehliadači.</li>
+      <li><strong>Cookie nevidno:</strong> obnov stránku a over, že v DevTools pozeráš práve na <code>127.0.0.1</code> / <code>localhost</code>. V karte <kbd>Console</kbd> si môžeš vypísať <code>document.cookie</code>.</li>
+    </ul>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ ZDROJE ============ -->
+  <section>
+    <h2>Zdroje</h2>
+    <a class="res" href="https://security.muni.cz" target="_blank" rel="noopener">
+      <span><span class="t">MUNI — Kybernetická bezpečnosť</span><br><span class="d">security.muni.cz</span></span>
+      <span class="ar">→</span>
+    </a>
+  </section>
+
+  <!-- ============ KĽÚČ PRE UČITEĽA ============ -->
+  <details class="key">
+    <summary>Kľúč pre učiteľa</summary>
+    <p><strong>Zamysli sa (prepísanie hodnoty v DevTools):</strong> stránka zobrazí <em>prepísané</em> meno. Záver: hodnota cookie je plne v rukách používateľa, teda nedokazuje, kto to je.</p>
+    <p><strong>Overenie porozumenia:</strong></p>
+    <ul>
+      <li>Nové meno sa <em>neuloží ako druhá cookie</em> — rovnaký názov + cesta prepíše pôvodnú.</li>
+      <li>Po obnovení beží <code>showSavedName()</code>, ktorá znova prečíta cookie a poskladá zobrazenie.</li>
+      <li>Po zmazaní cookie v DevTools <code>readCookie</code> vráti <code>null</code> → predvolená správa.</li>
+      <li>Zmenená hodnota sa prečíta „ako je" — ukážka, že údaje v prehliadači sú upraviteľné.</li>
+    </ul>
+    <p><strong>Úprava B (max-age=20):</strong> po uplynutí platnosti sa už zobrazený pozdrav sám nestratí — kód nebeží stále, stav sa prepočíta až pri ďalšom načítaní / volaní <code>showSavedName()</code>.</p>
+    <p><strong>Úprava C (premenovanie):</strong> častá chyba — zmenia názov len na 1–2 z 3 miest; ukladá a číta sa potom iný názov a stránka „nič si nepamätá". Dobrá príležitosť na čítanie chýb.</p>
+    <p><strong>Pozn.:</strong> ak si žiaci súbor vytvárajú sami a Windows skrýva prípony, ustráž <code>index.html</code> vs. <code>index.html.txt</code>. <code>SameSite=Lax</code> necháme pripravené, nevysvetľujeme doň.</p>
+  </details>
+
+</div>
+
+<script>
+  // --- theme toggle (localStorage v try/catch) ---
+  (function(){
+    const root=document.documentElement, icon=document.getElementById("themeIcon"),
+          label=document.getElementById("themeLabel"), btn=document.getElementById("themeToggle");
+    function apply(t){
+      root.setAttribute("data-theme",t);
+      const dark=t==="dark";
+      icon.textContent=dark?"☀️":"🌙";
+      label.textContent=dark?"Svetlý":"Tmavý";
+    }
+    let saved="light";
+    try{ saved=localStorage.getItem("kbz-theme")||"light"; }catch(e){}
+    apply(saved);
+    btn.addEventListener("click",()=>{
+      const next=root.getAttribute("data-theme")==="dark"?"light":"dark";
+      apply(next);
+      try{ localStorage.setItem("kbz-theme",next); }catch(e){}
+    });
+  })();
+
+  // --- copy buttons ---
+  document.querySelectorAll(".code .copy").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const pre=btn.parentElement.querySelector("pre");
+      const text=pre?pre.innerText:"";
+      const done=()=>{const o=btn.textContent;btn.textContent="Skopírované ✓";btn.classList.add("ok");
+        setTimeout(()=>{btn.textContent=o;btn.classList.remove("ok");},1400);};
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(()=>fallback(text,done));
+      }else{ fallback(text,done); }
+    });
+  });
+  function fallback(text,done){
+    const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");done();}catch(e){}
+    document.body.removeChild(ta);
+  }
+</script>
+</body>
+</html>
