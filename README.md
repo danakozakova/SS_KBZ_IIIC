@@ -11,7 +11,7 @@ KYBERNETICKÝ PRIESTOR:
 - https://danakozakova.github.io/SS_KBZ_IIIC/04_P_KBZ_analyza_incidentov_cast1_spolocne_zadanie.html
 
 COOKIES:
-
+- https://github.com/danakozakova/SS_KBZ_IIIC/blob/main/05_01_KBZ_cookies_PL_studenti.md
 - https://danakozakova.github.io/SS_KBZ_IIIC/05_02_KBZ_cookies_vlastna_cookie_studenti.html
 
 [Odovzdať vypracované](https://spstv-my.sharepoint.com/:f:/g/personal/dana_kozakova_strednaskolats_sk/IgCdRI3JTT7zTLn79X5DbygJAThcamdI-CsGTpcNnDQjGfg)
