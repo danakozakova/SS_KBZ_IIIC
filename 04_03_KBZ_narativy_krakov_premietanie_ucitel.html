@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Naratív v priamom prenose</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9ecf2; --surface:#ffffff; --surface-2:#f3f5f9; --ink:#171a22; --muted:#5c6474; --faint:#8a91a1;
+  --line:#d9dee7; --line-strong:#c3cad6;
+  --accent:#0d7a80; --accent-ink:#0a5c61; --accent-soft:#d7ecec;
+  --good:#1f9d57; --good-soft:#dcf2e5; --warn:#c9820a; --warn-soft:#fbefd6; --bad:#cf3d3d; --bad-soft:#f8dddd;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1017; --surface:#171b25; --surface-2:#1f2430; --ink:#e8ebf2; --muted:#a2aab9; --faint:#78808f;
+    --line:#2a303d; --line-strong:#3a4252;
+    --accent:#33b0b6; --accent-ink:#5ecacf; --accent-soft:#14343a;
+    --good:#3ec27a; --good-soft:#15301f; --warn:#e3a43a; --warn-soft:#352914; --bad:#ec6464; --bad-soft:#3a1c1e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1017; --surface:#171b25; --surface-2:#1f2430; --ink:#e8ebf2; --muted:#a2aab9; --faint:#78808f;
+  --line:#2a303d; --line-strong:#3a4252;
+  --accent:#33b0b6; --accent-ink:#5ecacf; --accent-soft:#14343a;
+  --good:#3ec27a; --good-soft:#15301f; --warn:#e3a43a; --warn-soft:#352914; --bad:#ec6464; --bad-soft:#3a1c1e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;overflow:hidden}
+h1,h2,h3{font-family:'Archivo',sans-serif;text-wrap:balance;margin:0}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* --- slides --- */
+.slide{position:absolute;inset:0;display:none;padding:clamp(20px,5vh,56px) clamp(16px,6vw,96px) 80px;overflow:auto}
+.slide.active{display:flex;flex-direction:column;justify-content:center}
+.inner{max-width:1100px;width:100%;margin:0 auto}
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:clamp(12px,1.3vw,16px);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.lock{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--accent);color:#fff}
+.lock svg{width:16px;height:16px}
+h1{font-size:clamp(40px,7vw,96px);font-weight:800;line-height:1.02;letter-spacing:-.01em}
+h2{font-size:clamp(28px,4.2vw,58px);font-weight:800;line-height:1.08;margin-bottom:.5em}
+.lead{font-size:clamp(18px,2.2vw,30px);color:var(--muted);margin-top:.6em;line-height:1.35}
+.big{font-size:clamp(22px,2.8vw,40px);line-height:1.3}
+.q{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(26px,3.6vw,52px);line-height:1.15;color:var(--ink)}
+.q .qm{color:var(--accent)}
+.step{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:clamp(12px,1.2vw,15px);letter-spacing:.12em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent-ink);padding:6px 12px;border-radius:6px;margin-bottom:18px}
+
+.strip{border-left:6px solid var(--accent);background:var(--surface);padding:22px 26px;border-radius:0 12px 12px 0;margin-top:24px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:22px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}
+.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:20px}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:22px}
+@media (max-width:760px){.grid2,.grid3,.grid4,.grid5{grid-template-columns:1fr}}
+.card h3{font-size:clamp(20px,2.3vw,32px);margin-bottom:8px}
+.card p{margin:.3em 0;font-size:clamp(16px,1.7vw,24px);line-height:1.4;color:var(--muted)}
+.card .tag{font-family:'IBM Plex Mono',monospace;font-size:clamp(11px,1.05vw,14px);letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink)}
+.card.acc{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft) inset}
+.card.warn{background:var(--warn-soft);border-color:transparent}
+.card.good{background:var(--good-soft);border-color:transparent}
+.card.bad{background:var(--bad-soft);border-color:transparent}
+.nums{font-family:'IBM Plex Mono',monospace;color:var(--ink);font-size:clamp(15px,1.5vw,20px);margin-top:10px}
+.nums{display:flex;flex-wrap:wrap;gap:6px 8px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:3px 10px 3px 3px;font-family:'IBM Plex Sans',sans-serif;font-size:.85em;white-space:nowrap}
+.nums b{display:inline-grid;place-items:center;min-width:1.9em;height:1.9em;border-radius:6px;background:var(--accent);color:#fff;margin-right:4px;font-weight:600}
+
+ol.rules{font-size:clamp(20px,2.3vw,32px);line-height:1.5;padding-left:1.3em;margin:.4em 0}
+ol.rules li::marker{color:var(--accent);font-family:'Archivo';font-weight:800}
+
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:20px;font-size:clamp(16px,1.8vw,24px)}
+.flow span{background:var(--surface);border:1px solid var(--line);padding:10px 16px;border-radius:10px}
+.flow i{font-style:normal;color:var(--accent);font-weight:700}
+
+/* narrative cards */
+.nar{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--bad);border-radius:0 12px 12px 0;padding:14px 18px}
+.nar .tech{font-family:'IBM Plex Mono',monospace;font-size:clamp(11px,1.05vw,14px);letter-spacing:.1em;text-transform:uppercase;color:var(--bad);font-weight:600}
+.nar.geo{border-left-color:var(--warn)}
+.nar.geo .tech{color:var(--warn)}
+.nar h3{font-size:clamp(17px,1.8vw,24px);margin:4px 0 4px}
+.nar p{margin:.2em 0;font-size:clamp(13px,1.35vw,18px);line-height:1.35;color:var(--muted)}
+.rl{color:var(--ink)}
+.rl::before{content:"Fakty: ";font-weight:600;color:var(--good)}
+
+/* comparison */
+.cmp{display:grid;grid-template-columns:auto 1fr 1fr;gap:10px 16px;margin-top:18px;align-items:start}
+.cmp>div{padding:8px 0;border-top:1px solid var(--line);font-size:clamp(14px,1.45vw,20px);line-height:1.35}
+.cmp .rh{font-family:'IBM Plex Mono',monospace;font-size:.78em;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);padding-top:12px}
+.cmp .ha{color:var(--accent-ink);font-weight:600}
+@media (max-width:760px){.cmp{grid-template-columns:1fr}.cmp .rh{padding-top:14px}}
+
+.tight .q{font-size:clamp(22px,2.8vw,40px)}
+.tight .big{font-size:clamp(16px,1.8vw,24px)}
+.tight .card{padding:14px 18px}
+.tight .card p{font-size:clamp(14px,1.35vw,18px);margin:.2em 0}
+.tight .card h3{font-size:clamp(18px,2vw,26px)}
+.tight .lead{font-size:clamp(15px,1.6vw,22px);margin-top:.5em}
+.tight .chip{font-size:.75em}
+.tight .grid3{gap:14px}
+.tight .strip p{font-size:clamp(14px,1.45vw,19px)!important}
+.tight .strip{padding:14px 22px}
+/* fragments */
+.f{opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s;visibility:hidden}
+.f.on{opacity:1;transform:none;visibility:visible}
+
+/* chrome */
+.bar{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--faint);z-index:5;pointer-events:none}
+.bar button{pointer-events:auto}
+.btn{background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;cursor:pointer}
+.btn:hover{color:var(--ink);border-color:var(--line-strong)}
+.top{position:fixed;top:12px;right:14px;display:flex;gap:8px;z-index:6}
+.progress{position:fixed;left:0;top:0;height:4px;background:var(--accent);transition:width .3s;z-index:6}
+
+/* teacher notes */
+#notes{position:fixed;left:16px;right:16px;bottom:52px;max-height:46vh;overflow:auto;background:var(--surface);border:2px solid var(--warn);border-radius:14px;padding:16px 20px;box-shadow:0 10px 40px rgba(0,0,0,.25);display:none;z-index:7;font-size:16px;line-height:1.5}
+#notes.show{display:block}
+#notes .h{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--warn);margin-bottom:6px}
+#notes p{margin:.35em 0}
+#notes .say::before{content:"Povedz: ";font-weight:600;color:var(--good)}
+#notes .ask::before{content:"Pýtaj sa: ";font-weight:600;color:var(--accent)}
+#notes .no::before{content:"Nepovedz: ";font-weight:600;color:var(--bad)}
+.slide aside.n{display:none}
+.hint{font-family:'IBM Plex Mono';font-size:13px;color:var(--faint);margin-top:26px}
+.slide a,#notes a{color:var(--accent-ink);text-decoration:underline;text-underline-offset:2px}
+.srcs a{display:inline-block;margin:3px 0;font-size:clamp(13px,1.3vw,17px);line-height:1.3}
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="top">
+  <button class="btn" id="notesBtn" title="Poznámky pre učiteľku (N)">Poznámky · N</button>
+  <button class="btn" id="themeBtn" title="Svetlý / tmavý režim (T)">◐</button>
+</div>
+
+<!-- ============ 1 · ÚVOD ============ -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker"><span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>Kybernetická bezpečnosť · SPŠ IT Ignáca Gessaya</div>
+    <h1>Naratív v priamom prenose</h1>
+    <p class="lead">Téma 04 · hodina 3 — Krakov, 7. 11. 2026</p>
+    <p class="hint">→ / medzerník = ďalej · ← = späť · N = poznámky · T = režim</p>
+  </div>
+  <aside class="n">
+    <p>Prípadová štúdia naživo. Doteraz ste rozoberali staré, uzavreté prípady (kartičky, 5 incidentov). Dnes jeden, ktorý sa stal pred dvoma dňami a ešte sa vyšetruje.</p>
+    <p>Reálna tragédia so šiestimi obeťami — drž vecný, triezvy tón. Nerozoberáme obete ani páchateľa, rozoberáme <b>informačnú vlnu okolo udalosti</b>. Falošné obrázky zámerne nezobrazujeme.</p>
+    <p class="no">zatiaľ názvy manipulačných techník — tie si žiaci najprv skúsia pomenovať sami.</p>
+  </aside>
+</section>
+
+<!-- ============ 2 · Z MINULA ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Z minula · slovník na dnes</span>
+    <p class="q">Čo už vieme pomenovať<span class="qm">?</span></p>
+    <div class="grid3">
+      <div class="card f"><div class="tag">priestor</div><p style="color:var(--ink)">kybernetický · informačný · <b>hybrid</b></p></div>
+      <div class="card f"><div class="tag">kde udrie</div><p style="color:var(--ink)">fyzická · logická · <b>personálna</b> vrstva</p></div>
+      <div class="card f"><div class="tag">povaha</div><p style="color:var(--ink)">incident vs. <b>útok</b> (rozhoduje úmysel)</p></div>
+      <div class="card f"><div class="tag">kto šíri</div><p style="color:var(--ink)">dezinformácia vs. <b>misinformácia</b></p></div>
+      <div class="card f"><div class="tag">jadro útoku na hlavu</div><p style="color:var(--ink)"><b>naratív</b> — príbeh, čo má zmeniť názor</p></div>
+      <div class="card f"><div class="tag">pozor</div><p style="color:var(--ink)"><b>následok ≠ cieľ</b></p></div>
+    </div>
+    <div class="strip f"><p class="big" style="margin:0">Dnes tie isté pojmy prepojíme na <b>jednu čerstvú udalosť</b>.</p></div>
+  </div>
+  <aside class="n">
+    <p class="ask">rýchle opakovanie: „Čím sa líši incident od útoku?“ · „Kto je v našom príbehu babka?“ · „Čo je naratív?“ — nech to zaznie od nich.</p>
+    <p>Tento slajd je kotva. Na konci hodiny sa k týmto pojmom vrátime a zaškatuľkujeme krakovský prípad presne nimi.</p>
+  </aside>
+</section>
+
+<!-- ============ 3 · FAKTY ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Najprv fakty · čo je potvrdené</span>
+    <p class="q">Fakty — čo naozaj vieme<span class="qm">?</span></p>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card"><div class="tag">udalosť</div><p style="color:var(--ink)">7. 11. 2026 (sobota), Rynok Hlavný, Krakov. Masová streľba: <b>6 mŕtvych, ~15 ranených</b>, dvaja policajti ťažko zranení.</p></div>
+      <div class="card"><div class="tag">páchateľ</div><p style="color:var(--ink)"><b>Poľský občan</b> (~24 r.) s legálnou zbraňou, postrelený a zadržaný. Podľa ministra vnútra sa zaujímal o <b>krajne pravicové</b> ideológie; motív sa vyšetruje.</p></div>
+      <div class="card"><div class="tag">reakcia štátu</div><p style="color:var(--ink)">Prvé hlásenie ~15:00, chronológiu podal policajný prezident. V dome podozrivého (Ostrovec Św.) našli <b>telá troch ľudí</b>, zrejme rodiny.</p></div>
+      <div class="card acc"><div class="tag">a potom…</div><p style="color:var(--ink)">Do troch hodín po streľbe sa rozbehla <b>riadená dezinformačná vlna</b> — proruské účty a portály z Grécka, Španielska, Vietnamu, Číny aj Bulharska.</p></div>
+    </div>
+  </div>
+  <aside class="n">
+    <p class="say">„Toto sú veci, ktoré potvrdili polícia, ministri a veľké médiá. Všetko ostatné, čo dnes uvidíme, si na túto kostru niekto dolepil.“</p>
+    <p>Dve veci sú kľúčové, lebo ich naratívy priamo prevracajú: <b>páchateľ bol Poliak</b> (nie cudzinec/Ukrajinec) a <b>polícia na mieste bola</b> (dvaja policajti sa zranili). K obom sa vrátime.</p>
+    <p class="no">meno/iniciály páchateľa — nie je to podstatné a nie je dôvod ich šíriť.</p>
+  </aside>
+</section>
+
+<!-- ============ 4 · ÚLOHA ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Úloha · vo dvojiciach</span>
+    <h2 style="font-size:clamp(24px,3.4vw,46px)">Z analýzy 1 500+ príspevkov vyšlo <span style="color:var(--accent)">7 naratívov</span>.</h2>
+    <p class="hint" style="margin-top:6px">Zdroj: česká analýza proruských kanálov (7.–8. 11. 2026) — <a href="#">doplniť odkaz</a>.</p>
+    <ol class="rules" style="font-size:clamp(16px,1.9vw,26px)">
+      <li class="f">Prečítajte si 7 tvrdení (na lístku / ďalší slajd).</li>
+      <li class="f">Ku každému skúste pomenovať, <b>akým trikom</b> pôsobí na čitateľa.</li>
+      <li class="f">Označte, ktoré sa dajú <b>overiť faktom</b> — a ktoré sa overiť nedajú (a prečo je to zámer).</li>
+    </ol>
+    <div class="strip f"><p class="big" style="margin:0">Zdieľali ich aj známe proruské účty: <b>Rybar EN, Pravda CZ, Aleksey The Great</b>.</p></div>
+  </div>
+  <aside class="n">
+    <p class="say">len zadanie. Nech najprv vymyslia vlastné názvy trikov — presne ako pri kôpkach v 04_01.</p>
+    <p class="no">odborné názvy techník (false flag, scapegoating, JAQ…) — tie odhalíš až po ich pokuse.</p>
+    <p class="ask">pri obchádzke: „Dá sa toto tvrdenie vôbec overiť?“ · „Čo ti tá veta podsúva, aj keď to priamo nepovie?“</p>
+  </aside>
+</section>
+
+<!-- ============ 5 · 7 NARATÍVOV (zoznam) ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">7 naratívov · na triedenie</span>
+    <div class="grid2">
+      <div class="card"><div class="nums" style="margin:0 0 4px"><span class="chip"><b>1</b>Útok ako zámienka</span></div><p>„Podozrivé načasovanie — aby mala Tuskova vláda dôvod vyhlásiť výnimočný stav počas sporu o ústavný súd.“</p></div>
+      <div class="card"><div class="nums" style="margin:0 0 4px"><span class="chip"><b>2</b>Ukrajinská/nacistická stopa</span></div><p>Snaha spojiť páchateľa s Ukrajinou — údajná výstroj, symbol „Totenkopf“ na oblečení.</p></div>
+      <div class="card"><div class="nums" style="margin:0 0 4px"><span class="chip"><b>3</b>Vláda klame, polícia zlyhala</span></div><p>„Polícia aj minister na mieste chýbali.“ Vyvolávanie nedôvery v štát.</p></div>
+      <div class="card"><div class="nums" style="margin:0 0 4px"><span class="chip"><b>4</b>Migranti a rozklad Západu</span></div><p>Vina na EÚ a migráciu: „Poľsko je ďalšie Francúzsko“, „Brusel prelial poľskú krv“.</p></div>
+      <div class="card"><div class="nums" style="margin:0 0 4px"><span class="chip"><b>5</b>Preventívna obhajoba Ruska</span></div><p>„Aj tak to zvalia na Rusko“ — ešte skôr, než padlo akékoľvek obvinenie.</p></div>
+      <div class="card"><div class="nums" style="margin:0 0 4px"><span class="chip"><b>6</b>Neoverené detaily</span></div><p>Fámy: komplici, zapojenie armády, „zatajená národnosť páchateľa“.</p></div>
+    </div>
+    <div class="card" style="margin-top:16px"><div class="nums" style="margin:0 0 4px"><span class="chip"><b>7</b>„Len sa pýtam“ + whataboutizmus</span></div><p>Zdanlivo nevinné otázky („Prečo sa to asi deje?“), ktoré nič netvrdia, ale majú zasiať pochybnosť.</p></div>
+  </div>
+  <aside class="n">
+    <p>Pomocný slajd — nechaj na plátne počas triedenia. Ak máš lístky, rozdaj 7 naratívov vytlačených (sada na dvojicu).</p>
+    <p class="ask">„Ktoré z tých siedmich sa tvária ako fakt a ktoré ako otázka či pocit? Prečo je to dôležité?“</p>
+  </aside>
+</section>
+
+<!-- ============ 6 · TECHNIKY A (prevracajú fakty) ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Odhalenie · trik za naratívom (1/2)</span>
+    <p class="q">Prvá skupina: <span style="color:var(--bad)">vyhodnocujú overiteľné fakty</span></p>
+    <div class="grid2" style="margin-top:12px">
+      <div class="nar f"><div class="tech">presun viny + fabrikácia dôkazu</div><h3>2 · Ukrajinská/nacistická stopa</h3><p>Vinu pripíše vopred vybranému nepriateľovi a dolepí „dôkaz“ (výstroj, symbol).</p><p class="rl">páchateľ je Poliak; krajne pravicové zameranie bolo <b>domáce</b>, nie ukrajinské.</p></div>
+      <div class="nar f"><div class="tech">podkopávanie dôvery + vytrhnutý záber</div><h3>3 · Polícia zlyhala</h3><p>Zo strihu/kontextu spraví „dôkaz“, že štát zlyhal.</p><p class="rl">prvá hliadka 23 s po hlásení, prvé výstrely po 3 min; za „reportérom bez polície“ stál policajt v civile. Dvaja policajti ranení.</p></div>
+      <div class="nar f"><div class="tech">zaplavenie priestoru fámami</div><h3>6 · Neoverené detaily</h3><p>V informačnom vákuu chrlí verzie rýchlejšie, než ich stihnú overiť.</p><p class="rl">žiadny druhý útočník (bol to kňaz na terase kostola), páchateľ nebol vojak, národnosť známa.</p></div>
+      <div class="card acc f" style="align-self:center"><p style="color:var(--ink);margin:0">Spoločné: dá sa <b>overiť</b> — a overenie ich vyvráti. Preto ich treba šíriť <b>rýchlo</b>, kým vákuum trvá.</p></div>
+    </div>
+  </div>
+  <aside class="n">
+    <p>Najprv nech povedia svoje názvy, potom odhaľuj odborné. Prepoj na slovník: toto je úder na <b>integritu/autenticitu informácií</b> — nie na systém.</p>
+    <p class="say">„Všimnite si, že toto sú tvrdenia o faktoch. Fakty sa dajú overiť — tak prečo lietajú ďalej? Lebo overenie trvá, a lož medzitým obehne svet.“</p>
+    <p>2 · „Totenkopf“: lož sa prilepila na zrnko pravdy (reálne krajne pravicové zameranie) a presmerovala ho na Ukrajinu — dobrý moment ukázať, ako polopravda funguje.</p>
+  </aside>
+</section>
+
+<!-- ============ 7 · TECHNIKY B (geopolitický rámec) ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Odhalenie · trik za naratívom (2/2)</span>
+    <p class="q">Druhá skupina: <span style="color:var(--warn)">rámec, ktorý sa nedá vyvrátiť</span></p>
+    <div class="grid2" style="margin-top:12px">
+      <div class="nar geo f"><div class="tech">konšpiračné rámcovanie „cui bono“</div><h3>1 · Útok ako zámienka (false flag)</h3><p>Bez dôkazu podsúva, že udalosť niekto zinscenoval pre zisk.</p><p class="rl">domáci páchateľ; žiadny výnimočný stav sa nevyhlásil.</p></div>
+      <div class="nar geo f"><div class="tech">presun viny do hotovej šablóny</div><h3>4 · Migranti a rozklad Západu</h3><p>Nalepí udalosť na existujúcu ideologickú šablónu + emocionálne heslá.</p><p class="rl">domáci páchateľ, legálna zbraň, žiadna väzba na migráciu.</p></div>
+      <div class="nar geo f"><div class="tech">preempčná diskreditácia (očkovanie)</div><h3>5 · Preventívna obhajoba Ruska</h3><p>„Aj tak to zvalia na Rusko“ zaznie skôr, než padne obvinenie — budúca atribúcia potom pôsobí ako klišé.</p><p class="rl">diskredituje záver dopredu, bez ohľadu na zistenia.</p></div>
+      <div class="nar geo f"><div class="tech">sugestívne otázky (JAQ) + popierateľnosť</div><h3>7 · „Len sa pýtam“</h3><p>„Prečo sa to asi deje?“ netvrdí nič — a práve preto je nenapadnuteľné.</p><p class="rl">cieľom nie je informovať, ale zasiať pochybnosť.</p></div>
+    </div>
+    <div class="strip f"><p class="big" style="margin:0">Tieto <b>netvrdia overiteľný fakt</b> — podsúvajú rámec alebo pocit. Preto sa nedajú „vyvrátiť“, len rozpoznať.</p></div>
+  </div>
+  <aside class="n">
+    <p class="say">„Prvá skupina klamala o faktoch. Táto je prefíkanejšia — netvrdí nič konkrétne, len ti ponúka okuliare, cez ktoré sa máš pozerať. Nedá sa to ‚odfaktovať‘, dá sa to len pomenovať.“</p>
+    <p class="ask">„Prečo je ťažšie brániť sa proti otázke ako proti tvrdeniu?“ — JAQ-ing: autor si necháva zadné dvierka (‚veď som sa len pýtal‘).</p>
+  </aside>
+</section>
+
+<!-- ============ 8 · KATEGORIZÁCIA ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Zaškatuľkujme to · našou rubrikou</span>
+    <p class="q">Ako by sme celú vlnu <span style="color:var(--accent)">klasifikovali</span>?</p>
+    <div class="grid3" style="margin-top:12px">
+      <div class="card f"><div class="tag">typ</div><p style="color:var(--ink)"><b>informačný priestor</b> (s kyber nástrojmi). Nič sa nenabúralo — cieľ je v hlavách.</p></div>
+      <div class="card f"><div class="tag">vrstva</div><p style="color:var(--ink)"><b>personálna</b> — falošné a prevzaté účty, identity. Žiadny systém.</p></div>
+      <div class="card f"><div class="tag">incident / útok</div><p style="color:var(--ink)"><b>útok</b> — úmyselný, koordinovaný, riadený.</p></div>
+      <div class="card f"><div class="tag">dezinfo / misinfo</div><p style="color:var(--ink)"><b>zmiešané</b>: zdroj = dezinfo, domáci šíritelia = misinfo.</p></div>
+      <div class="card f"><div class="tag">cieľ vs. následok</div><p style="color:var(--ink)">cieľ = rozštiepiť, oslabiť dôveru. Reálne obete a spor o ústavný súd = <b>parazitovaný následok</b>.</p></div>
+      <div class="card acc f"><div class="tag">triáda CIA</div><p style="color:var(--ink)">klasická triáda nesedí (žiadny systém). Narušená <b>autenticita/integrita</b> informácií. CIA tu nestačí.</p></div>
+    </div>
+    <div class="strip f"><p class="big" style="margin:0"><b>Jednou vetou:</b> informačný útok (kyber nástroje, personálna vrstva), úmyselný, s koordinovaným naratívom, ktorý parazituje na reálnej tragédii.</p></div>
+  </div>
+  <aside class="n">
+    <p>Toto je návrat ku kotve zo slajdu 2 — nechaj žiakov doplniť každú škatuľku, až potom odhaľ.</p>
+    <p class="ask">„Je toto hybrid ako #MacronLeaks?“ — pozor: tam útočník <b>najprv vnikol do systémov</b>. Tu sa do ničoho nevniklo, boty sú len roznášač → informačný (hybrid uznaj len pri dobrom odôvodnení).</p>
+    <p class="say">„Klasická CIA stráži systémy. Tu žiaden systém nepadol — padla dôvera v to, čo je pravda. Preto model rozširujeme o autenticitu.“</p>
+  </aside>
+</section>
+
+<!-- ============ 9 · DOPPELGANGER (recap) ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Poznáme to odinakiaľ · Doppelganger</span>
+    <p class="q">Spomeňme si na <span style="color:var(--accent)">incident č. 2</span> z minulej hodiny</p>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card"><div class="tag">čo to bolo</div><p style="color:var(--ink)">Dlhodobá ruská operácia (od 2022, odhalená 2024): <b>klonované weby</b> skutočných médií (Der Spiegel, The Guardian, Bild, Washington Post), napodobnené domény (<span class="mono">nato.ws</span> a pod.), vymyslené články pod ich značkou, botnet falošných účtov, platená reklama na Facebooku, generatívna AI.</p></div>
+      <div class="card"><div class="tag">cieľ</div><p style="color:var(--ink)">zmeniť, čo si ľudia myslia o <b>sankciách, Ukrajine, utečencoch a Západe</b>, a posilniť proruské sily. Nič sa nehacklo — informačný priestor.</p></div>
+      <div class="card acc"><div class="tag">dosah / dôsledky</div><p style="color:var(--ink)">pripísané ruským aktérom; USA v <b>2024 zabavili 32 domén</b>, EÚ uvalila sankcie. Kampaň pokračuje v mutáciách.</p></div>
+    </div>
+    <p class="srcs" style="margin-top:10px">Zdroje: <a href="https://www.disinfo.eu/doppelganger-hub/">EU DisinfoLab</a> · <a href="https://therecord.media/doj-seizes-russian-disinfo-domains-election">The Record (32 domén)</a> · <a href="https://en.wikipedia.org/wiki/Doppelganger_(disinformation_campaign)">Wikipedia</a></p>
+    <div class="strip f"><p class="big" style="margin:0">Krakov aj Doppelganger sú <b>ten istý druh</b> útoku — ale robia to opačne.</p></div>
+  </div>
+  <aside class="n">
+    <p>Krátke oživenie. Ak si incident č. 2 nerobili alebo ho zabudli, stačí táto definícia.</p>
+    <p class="say">„Doppelganger si pamätáte ako ‚vyrob falošné médiá‘. Krakov je ‚zneuži skutočnú udalosť‘. Porovnajme ich.“</p>
+    <p>Zdroje (na kliknutie): <a href="https://www.disinfo.eu/doppelganger-hub/">EU DisinfoLab — Doppelganger hub</a> · <a href="https://therecord.media/doj-seizes-russian-disinfo-domains-election">The Record — US zabavili 32 domén</a> · <a href="https://en.wikipedia.org/wiki/Doppelganger_(disinformation_campaign)">Wikipedia</a>.</p>
+  </aside>
+</section>
+
+<!-- ============ 10 · DOPPELGANGER vs KRAKOV ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Porovnanie · dva spôsoby toho istého</span>
+    <div class="cmp">
+      <div class="rh"></div><div class="ha">Doppelganger</div><div class="ha">Krakov 2026</div>
+      <div class="rh">čo robí</div><div>vyrába falošný obsah <b>od nuly</b> (fake médiá)</div><div>zneužíva <b>reálnu</b> tragédiu (parazituje)</div>
+      <div class="rh">spúšťač</div><div>žiadny — témy si tvorí sám</div><div>skutočná udalosť ako <b>palivo</b></div>
+      <div class="rh">čas</div><div>dlhodobá, vopred budovaná infraštruktúra</div><div>reaktívna vlna <b>za hodiny</b> (~3 h po streľbe)</div>
+      <div class="rh">nástroje</div><div>klonované domény, botnet, reklama, AI</div><div>siete účtov, AI obrázky, preklady, portály</div>
+    </div>
+    <div class="card good f" style="margin-top:16px"><div class="tag" style="color:var(--good)">spoločné</div><p style="color:var(--ink)">informačný priestor (cieľ v hlavách) · personálna vrstva · astroturfing · generatívna AI · koordinované vo viacerých jazykoch · cieľ rozštiepiť Západ a podkopať Ukrajinu · zdroj = dezinfo, rezonátori = misinfo.</p></div>
+  </div>
+  <aside class="n">
+    <p class="ask">„Čo je ťažšie ustrážiť — vyrobenú fake stránku, alebo lož prilepenú na skutočnú udalosť? Prečo?“ Parazit na reálnej udalosti je dôveryhodnejší: udalosť je pravdivá, klamstvo je len „dovysvetlenie“.</p>
+    <p>Toto je presne rozdiel na otázku 7 v analýze 5 incidentov — vieš ich dať vedľa seba ako dvojičku.</p>
+  </aside>
+</section>
+
+<!-- ============ 11 · DVE OPTIKY ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Tá istá udalosť · dve analýzy</span>
+    <p class="q">Poľská <span style="color:var(--accent)">PAP</span> napočítala <span style="color:var(--accent)">5 naratívov</span> a česká analýza <span style="color:var(--accent)">7</span>?</p>
+    <div class="grid2" style="margin-top:12px">
+      <div class="card f"><div class="tag">česká analýza · 7</div><h3>Strategické naratívy</h3><p>Geopolitický <b>rámec</b> proruských kanálov: načasovanie, Ukrajina, migranti, obhajoba Ruska, pochybnosti.</p></div>
+      <div class="card f"><div class="tag">poľská PAP · 5</div><h3>Operačné faky</h3><p>Konkrétne <b>nepravdivé tvrdenia</b> o udalosti: polícia, AI tvár, brat, druhý útočník, vojak.</p></div>
+    </div>
+    <div class="strip f"><p class="big" style="margin:0">OKO.press to nazvalo <b>„poschodová“ dezinformácia</b>: faky sú prízemie (čo sa „stalo“), naratívy poschodie (čo to „znamená“).</p></div>
+  </div>
+  <aside class="n">
+    <p class="say">„Nie je to spor, ktorý je správny. Sú to dva pohľady na tú istú vec — jeden pozerá na konkrétne lži, druhý na veľký príbeh, do ktorého ich balia.“</p>
+    <p>Dôležité: PAP katalóg je hlavne o <b>domácich šíriteľoch</b> (poľskí politici, anonymné účty), česká analýza o <b>proruských kanáloch</b>. Spolu tvoria celý obraz.</p>
+  </aside>
+</section>
+
+<!-- ============ 12 · PAP 5 ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">PAP · 5 operačných fakov a ich vyvrátenie</span>
+    <div class="grid2">
+      <div class="card f"><div class="nums" style="margin:0 0 4px"><span class="chip"><b>1</b>Polícia chýbala / meškala</span></div><p class="rl" style="font-size:clamp(13px,1.3vw,17px)">prvá hliadka 23 s po hlásení; za „reportérom bez polície“ stál policajt v civile.</p></div>
+      <div class="card f"><div class="nums" style="margin:0 0 4px"><span class="chip"><b>2</b>AI „tvár páchateľa“</span></div><p class="rl" style="font-size:clamp(13px,1.3vw,17px)">nástroj SynthID potvrdil úpravu Google AI; na fotku pridali odznak, ktorý páchateľ nemal.</p></div>
+      <div class="card f"><div class="nums" style="margin:0 0 4px"><span class="chip"><b>3</b>„Brat páchateľa“</span></div><p class="rl" style="font-size:clamp(13px,1.3vw,17px)">anonym na X (~2 mil. zobrazení); muž na fotkách sa verejne ohradil — bola to provokácia.</p></div>
+      <div class="card f"><div class="nums" style="margin:0 0 4px"><span class="chip"><b>4</b>Druhý útočník na streche</span></div><p class="rl" style="font-size:clamp(13px,1.3vw,17px)">na streche Mariackého kostola bol <b>kňaz</b> na terase; žiadny druhý útočník.</p></div>
+    </div>
+    <div class="card f" style="margin-top:14px"><div class="nums" style="margin:0 0 4px"><span class="chip"><b>5</b>Páchateľ bol vojak</span></div><p class="rl" style="font-size:clamp(13px,1.3vw,17px)">šírené v ruskom a bieloruskom priestore; minister obrany Kosiniak-Kamysz poprel — páchateľ nie je vojak Wojska Polského.</p></div>
+  </div>
+  <aside class="n">
+    <p>Pekný detail k č. 2: na upravenú fotku pridali <b>odznak s tromi šípkami</b> (historicky antifašistický symbol), ktorý páchateľ na origináli nemal — tj. tlačili aj opačný, „ľavicový“ rámec. Ukazuje, že cieľom nie je konkrétny smer, ale <b>zmätok</b>.</p>
+    <p class="ask">„Všimnite si č. 3 a 4 — dosah 1–2 milióny. Prečo vyhrávajú fámy nad opravami?“</p>
+  </aside>
+</section>
+
+<!-- ============ 13 · CROSSWALK ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Porovnanie · prízemie a poschodie</span>
+    <p class="q">Ktorý <span style="color:var(--accent)">fak</span> (PAP) patrí pod ktorý <span style="color:var(--accent)">naratív</span>?</p>
+    <div class="grid3" style="margin-top:12px">
+      <div class="card f"><div class="tag">nedôvera v štát</div><p style="color:var(--ink)"><b>PAP 1</b> · polícia chýbala<br>↓<br><b>náš 3</b> · vláda klame, polícia zlyhala</p></div>
+      <div class="card f"><div class="tag">vizuálny „dôkaz“</div><p style="color:var(--ink)"><b>PAP 2</b> · AI „tvár“ + pridaný symbol<br>↓<br><b>náš 2</b> · ukrajinská/nacistická stopa</p></div>
+      <div class="card f"><div class="tag">zaplavenie fámami</div><p style="color:var(--ink)"><b>PAP 3·4·5</b> · brat / druhý útočník / vojak<br>↓<br><b>náš 6</b> · neoverené detaily</p></div>
+    </div>
+    <div class="card acc f" style="margin-top:16px"><div class="tag">len v našich 7 — poschodie bez poľského prízemia</div><p style="color:var(--ink)">Naratívy <b>1</b> (false flag), <b>4</b> (migranti), <b>5</b> (obhajoba Ruska) a <b>7</b> („len sa pýtam“) sú čisto geopolitický <b>rámec</b> — poľský operačný zoznam fakov ich vôbec nerieši.</p></div>
+  </div>
+  <aside class="n">
+    <p class="say">„Poľský zoznam pomenoval konkrétne lži o tom, čo sa stalo. Naša analýza pridala poschodie — veľký príbeh, prečo sa to vraj deje. To poschodie je čisto proruský rámec.“</p>
+    <p>Ak je čas, nechaj dvojice samy priradiť, ktorý fak patrí pod ktorý naratív — je to dobré cvičenie na vzťah fakt ↔ rámec.</p>
+  </aside>
+</section>
+
+<!-- ============ 14 · REZONÁTORI ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Kto to roznáša · babka vo veľkom</span>
+    <p class="q">Zdroj je vonku. <span style="color:var(--accent)">Dosah robíme my.</span></p>
+    <div class="grid2" style="margin-top:12px">
+      <div class="card bad f"><div class="tag" style="color:var(--bad)">zdroj · dezinfo (úmysel)</div><p style="color:var(--ink)">Rybar EN, Pravda CZ, Aleksey The Great, kremeľské portály. Vyrábajú a prvotne tlačia naratív.</p></div>
+      <div class="card warn f"><div class="tag" style="color:var(--warn)">rezonátori · prevažne misinfo</div><p style="color:var(--ink)">domáci politici, influenceri, anonymné účty (dosah 1–2 mil.) a bežní zdieľajúci. To je tá <b>babka z 04_01</b> (čo v dobrej viere zdieľa nepravdu — <b>misinformácia</b>) — teraz v masovom meradle.</p></div>
+    </div>
+    <div class="strip f"><p class="big" style="margin:0">Expert NASK (M. Marek): veľkú časť dosahu kremeľských naratívov v Poľsku generujú <b>samotní občania</b> — bez nich by boli zásahy podstatne menšie.</p></div>
+  </div>
+  <aside class="n">
+    <p class="say">„Rusko naratív vymyslí a zapáli. Ale aby horel, musí ho niekto roznášať. A to robíme my — každým zdieľaním bez overenia. Preto je vaša opatrnosť súčasť obrany štátu.“</p>
+    <p>Prepoj na slajd ‚babka a voda‘ z 04_01: rovnaký mechanizmus, len tu ide o milióny ľudí a geopolitiku.</p>
+  </aside>
+</section>
+
+<!-- ============ 15 · AKO SA BRÁNIŤ ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Praktická obrana · 4 reflexy</span>
+    <div class="grid4">
+      <div class="card f"><div class="tag">1 · spomaľ</div><p style="color:var(--ink)">V prvých hodinách po tragédii je vákuum. Počkaj na potvrdenie od služieb a veľkých médií.</p></div>
+      <div class="card f"><div class="tag">2 · over zdroj</div><p style="color:var(--ink)">Kto to tvrdí? Anonymný účet? Portál, čo nikto nepozná? Doména napodobňujúca médium?</p></div>
+      <div class="card f"><div class="tag">3 · fakt, alebo pocit?</div><p style="color:var(--ink)">Dá sa to overiť? Alebo je to len otázka/rámec, čo ťa má nasmerovať? Pozor na „len sa pýtam“.</p></div>
+      <div class="card f"><div class="tag">4 · obrázky klamú</div><p style="color:var(--ink)">AI „ostré“ fotky tváre či pridané symboly sú bežný trik. Nezdieľaj záber ako dôkaz.</p></div>
+    </div>
+    <div class="strip f"><p class="big" style="margin:0">Nezdieľať pochybné = najlacnejšia obrana, ktorú má každý z vás.</p></div>
+  </div>
+  <aside class="n">
+    <p class="say">„Nemusíte byť experti na dezinformácie. Stačia štyri reflexy — a hlavne ten posledný: keď neviem, nezdieľam.“</p>
+  </aside>
+</section>
+
+<!-- ============ 16 · ZDROJE ============ -->
+<section class="slide tight">
+  <div class="inner">
+    <span class="step">Zdroje · na kliknutie</span>
+    <h2 style="font-size:clamp(24px,3.2vw,42px)">Odkazy k hodine</h2>
+    <div class="grid2" style="margin-top:12px">
+      <div class="card"><div class="tag">Krakov 7. 11. 2026 · fakty a dezinformácie</div>
+        <div class="srcs">
+          <a href="https://oko.press/pietrowa-dezinformacja-o-zamachowcu-z-krakowa-kreml-manipuluje">OKO.press — „poschodová“ dezinformácia</a><br>
+          <a href="https://rp.pl/kraj/art45460481-zamach-w-krakowie-piec-falszywych-narracji-ktore-pojawily-sie-w-internecie">Rzeczpospolita — 5 falošných naratívov</a><br>
+          <a href="https://biznes.interia.pl/gospodarka/news-klamstwa-po-zamachu-w-krakowie-wskazano-piec-falszywych-scen,nId,23570776">Interia / PAP — 5 scenárov + vyvrátenie</a><br>
+          <a href="https://radiokrakow.pl/wiadomosci/krakow/falszywe-informacje-po-tragedii-w-krakowie-od-zdjec-ai-po-doniesienia-o-drugim-napastniku/187478">Radio Kraków — AI fotky, druhý útočník, vojak</a><br>
+          <a href="https://www.tygodnikpowszechny.pl/po-zamachu-w-krakowie-lekcja-ktora-dopiero-musimy-odrobic">Tygodnik Powszechny — podliehanie manipulácii</a><br>
+          <a href="https://www.radiokrakow.pl/audycje/jak-sami-zwiekszamy-w-sieci-zasiegi-kremla-dzialania-rosji-nakladaja-sie-na-aktywnosc-polskich-uzytkownikow/">Radio Kraków — rezonátori (dr. M. Marek, NASK)</a>
+        </div>
+      </div>
+      <div class="card"><div class="tag">Doppelganger (incident z 04_02)</div>
+        <div class="srcs">
+          <a href="https://www.disinfo.eu/doppelganger-hub/">EU DisinfoLab — Doppelganger hub</a><br>
+          <a href="https://therecord.media/doj-seizes-russian-disinfo-domains-election">The Record — US zabavili 32 domén</a><br>
+          <a href="https://en.wikipedia.org/wiki/Doppelganger_(disinformation_campaign)">Wikipedia — Doppelganger</a>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Overené 8. 11. 2026 · <b>7 naratívov</b> = česká analýza · <b>5 naratívov</b> = poľská PAP</p>
+  </div>
+  <aside class="n">
+    <p>Referenčný slajd pre teba — nemusíš ho premietať. Odkazy sú klikateľné aj v paneli poznámok (N) na príslušných slajdoch.</p>
+  </aside>
+</section>
+
+<div id="notes"><div class="h">Poznámky pre učiteľku · N skryje</div><div id="notesBody"></div></div>
+<div class="bar"><span>KBZ · 04_03 · Naratív v priamom prenose</span><span id="count"></span></div>
+
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0;
+  const root=document.documentElement;
+  try{const t=localStorage.getItem('kbz-theme'); if(t) root.dataset.theme=t;}catch(e){}
+  function frags(s){return [...s.querySelectorAll('.f')];}
+  function show(n,revealAll){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    frags(slides[i]).forEach(f=>f.classList.toggle('on',!!revealAll));
+    document.getElementById('count').textContent=(i+1)+' / '+slides.length;
+    document.getElementById('prog').style.width=((i+1)/slides.length*100)+'%';
+    const a=slides[i].querySelector('aside.n');
+    document.getElementById('notesBody').innerHTML=a?a.innerHTML:'<p>—</p>';
+    try{history.replaceState(null,'','#'+(i+1));}catch(e){}
+  }
+  function next(){const h=frags(slides[i]).find(f=>!f.classList.contains('on')); if(h) h.classList.add('on'); else if(i<slides.length-1) show(i+1,false);}
+  function prev(){const on=frags(slides[i]).filter(f=>f.classList.contains('on')); if(on.length) on[on.length-1].classList.remove('on'); else if(i>0) show(i-1,true);}
+  function toggleNotes(){document.getElementById('notes').classList.toggle('show');}
+  function toggleTheme(){
+    const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme=dark?'light':'dark';
+    try{localStorage.setItem('kbz-theme',root.dataset.theme);}catch(e){}
+  }
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown','Enter'].includes(e.key)){e.preventDefault();next();}
+    else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev();}
+    else if(e.key==='n'||e.key==='N') toggleNotes();
+    else if(e.key==='t'||e.key==='T') toggleTheme();
+    else if(e.key==='Home') show(0,false);
+    else if(e.key==='End') show(slides.length-1,true);
+  });
+  document.addEventListener('click',e=>{ if(e.target.closest('button,#notes,a')) return; next(); });
+  document.getElementById('notesBtn').onclick=toggleNotes;
+  document.getElementById('themeBtn').onclick=toggleTheme;
+  const h=parseInt((location.hash||'').slice(1),10);
+  show(h?h-1:0,false);
+})();
+</script>
+</body>
+</html>

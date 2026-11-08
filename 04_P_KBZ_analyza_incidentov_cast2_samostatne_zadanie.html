@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analýza incidentov</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e9ecf2;--surface:#fff;--surface-2:#f3f5f9;--ink:#171a22;--muted:#5c6474;--faint:#8a91a1;--line:#d9dee7;--line-strong:#c3cad6;--accent:#0d7a80;--accent-ink:#0a5c61;--accent-soft:#d7ecec;--good:#1f9d57;--warn:#c9820a;--warn-soft:#fbefd6;--bad:#cf3d3d}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0e1017;--surface:#171b25;--surface-2:#1f2430;--ink:#e8ebf2;--muted:#a2aab9;--faint:#78808f;--line:#2a303d;--line-strong:#3a4252;--accent:#33b0b6;--accent-ink:#5ecacf;--accent-soft:#14343a;--warn-soft:#352914}}
+:root[data-theme="dark"]{--bg:#0e1017;--surface:#171b25;--surface-2:#1f2430;--ink:#e8ebf2;--muted:#a2aab9;--faint:#78808f;--line:#2a303d;--line-strong:#3a4252;--accent:#33b0b6;--accent-ink:#5ecacf;--accent-soft:#14343a;--warn-soft:#352914}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;line-height:1.55}
+.wrap{max-width:800px;margin:0 auto;padding:28px 16px 80px}
+h1,h2{font-family:'Archivo',sans-serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.1}
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.lock{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff}
+.lock svg{width:15px;height:15px}
+.lead{color:var(--muted);font-size:18px;margin:.5em 0 0}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:18px}
+.strip{border-left:6px solid var(--accent);background:var(--surface);padding:16px 20px;border-radius:0 12px 12px 0;margin-top:18px}
+.warn{background:var(--warn-soft);border-radius:12px;padding:14px 18px;margin-top:18px}
+ol,ul{padding-left:1.3em;margin:.4em 0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+th{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.nav a{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:4px 12px 4px 4px;color:var(--ink);text-decoration:none;font-size:14px}
+.nav b,.badge{display:inline-grid;place-items:center;min-width:28px;height:28px;border-radius:6px;background:var(--accent);color:#fff;font-family:'Archivo';font-weight:800}
+.inc{margin-top:40px;border-top:2px solid var(--line-strong);padding-top:22px}
+.inc-head{display:flex;gap:14px;align-items:center}
+.inc-head .badge{min-width:44px;height:44px;font-size:22px;border-radius:10px}
+.inc-head h2{font-size:28px}
+.meta{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--muted)}
+.report{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:16px;font-size:16.5px}
+.report p{margin:0}
+.s sup{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent-ink);background:var(--accent-soft);border-radius:4px;padding:0 4px;margin:0 3px 0 2px}
+.answers{background:var(--surface-2);border:1px dashed var(--line-strong);border-radius:14px;padding:18px 20px;margin-top:14px}
+.q{display:block;border:0;padding:0;margin:14px 0 0}
+.q legend,.q>span{display:block;font-weight:600;margin-bottom:6px;padding:0}
+.q label{display:inline-flex;gap:6px;align-items:center;margin:2px 16px 6px 0;font-weight:400}
+.pts{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;color:var(--accent-ink);background:var(--accent-soft);border-radius:4px;padding:1px 6px;margin-left:6px;white-space:nowrap}
+textarea,input[type=text]{width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:10px 12px;resize:vertical}
+textarea:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.name{margin-top:18px}
+.name span{display:block;font-weight:600;margin-bottom:6px}
+.btn{font:inherit;font-weight:600;background:var(--accent);color:#fff;border:0;border-radius:10px;padding:12px 18px;cursor:pointer}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line-strong)}
+.saved{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--faint);margin-left:10px}
+.theme{position:fixed;top:12px;right:14px;background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
+.submit{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+@media print{.theme,.submit,.nav{display:none}.answers{break-inside:auto}}
+</style>
+</head>
+<body>
+<button class="theme" id="themeBtn" title="Svetlý / tmavý režim">◐</button>
+<div class="wrap">
+  <div class="kicker"><span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>Kybernetická bezpečnosť · SPŠ IT Ignáca Gessaya</div>
+  <h1>Analýza incidentov<br><span style="font-size:.55em;color:var(--muted)">2. časť · samostatne</span></h1>
+  <p class="lead">Tri skutočné incidenty. Každý z nich <b>samostatne</b> podrobne rozober a svoje rozhodnutie odôvodni – rovnako ako pri spoločnej časti. Práca je hodnotená.</p>
+
+  <div class="strip">
+    <div class="tag">Z minulej hodiny</div>
+    Incident môže byť <b>kybernetický</b> (cieľom sú IT systémy: hardvér, softvér, siete, dáta, účty), <b>informačný</b> (cieľom je to, čo si ľudia myslia – za útokom je naratív) alebo <b>hybridný</b> (oboje). Nedôvera po výpadku je zvyčajne <b>následok</b>, nie cieľ. Delenie nie je ultimátne – rozhoduje celá správa o incidente.
+  </div>
+
+  <div class="card">
+    <div class="tag">Ako postupovať</div>
+    <ol>
+      <li>Pozorne si prečítaj správu. Vety sú očíslované – v odpovediach sa na ne odvolávaj (napr. „veta 4“).</li>
+      <li>Ku každému incidentu vyplň všetkých 7 otázok. Používaj odborné pojmy z hodín (vrstvy kyberpriestoru, triáda CIA, ransomvér, phishing, botnet, naratív…).</li>
+      <li>Hodnotí sa najmä <b>argumentácia</b>: nestačí napísať „hybridný“ – musíš ukázať, ktoré znaky to dokazujú.</li>
+      <li>Na konci klikni na <b>Stiahnuť odpovede</b> a súbor odovzdaj podľa pokynov učiteľky.</li>
+    </ol>
+  </div>
+
+  <div class="warn"><b>Pozor:</b> odpovede sa priebežne ukladajú len v tomto prehliadači na tomto počítači. Pred zatvorením stránky si ich vždy <b>stiahni</b>.</div>
+
+  <div class="card">
+    <div class="tag">Hodnotenie · 30 bodov</div>
+    <table>
+      <tr><th>Za každý incident</th><th>body</th></tr>
+      <tr><td>1 klasifikácia · 2 zasiahnuté a vrstva · 5 naratív · 6 CIA</td><td>po 1 b</td></tr>
+      <tr><td>3 techniky a nástroje · 4 cieľ vs. následky · 7 odôvodnenie</td><td>po 2 b</td></tr>
+      <tr><td><b>spolu za incident</b></td><td><b>10 b</b></td></tr>
+    </table>
+    <p style="margin:.6em 0 0;color:var(--muted);font-size:15px">Známka: 30–27 b = 1 · 26–23 b = 2 · 22–18 b = 3 · 17–12 b = 4 · 11–0 b = 5</p>
+  </div>
+  <label class="name"><span>Meno a priezvisko</span><input type="text" id="meno" name="meno" autocomplete="name"></label>
+  <div class="nav"><a href="#inc1"><b>1</b>Kataster nehnuteľností</a><a href="#inc2"><b>2</b>Doppelganger</a><a href="#inc3"><b>3</b>Twitter a bitcoinový podvod</a></div>
+
+
+<section class="inc" id="inc1">
+  <div class="inc-head"><span class="badge">1</span><div><h2>Kataster nehnuteľností</h2><div class="meta">Slovensko · január 2025</div></div></div>
+  <div class="report"><div class="tag">Správa o incidente</div><p><span class="s"><sup>1</sup>V nedeľu 5. januára 2025 zaznamenal Úrad geodézie, kartografie a katastra SR (ÚGKK) útok na svoje informačné systémy.</span> <span class="s"><sup>2</sup>Útočníci zašifrovali kľúčové dáta a informačné systémy úradu; zasiahnutých bolo približne 800 serverov a desiatky pracovných staníc.</span> <span class="s"><sup>3</sup>Podľa odborníkov išlo o ransomvér: útočníci získali prístup k dátam, zašifrovali ich a začali úrad vydierať.</span> <span class="s"><sup>4</sup>Médiá informovali, že útočníci žiadali výkupné v sedemcifernej sume v dolároch.</span> <span class="s"><sup>5</sup>Prestal fungovať elektronický systém katastra nehnuteľností (ESKN) aj katastrálny portál a okresné katastrálne úrady museli zatvoriť.</span> <span class="s"><sup>6</sup>Ľudia nemohli prepisovať nehnuteľnosti a banky dočasne nevyplácali už schválené hypotéky, lebo nevedeli overiť list vlastníctva.</span> <span class="s"><sup>7</sup>Problémy mali aj žiadatelia o štátne príspevky, ktorí list vlastníctva potrebovali, a v Bratislave nebolo možné vydávať parkovacie karty.</span> <span class="s"><sup>8</sup>Riešenie koordinoval Národný bezpečnostný úrad a vládna jednotka CSIRT; prípadom sa zaoberá Úrad boja proti organizovanej kriminalite.</span> <span class="s"><sup>9</sup>Na obnove pracoval tím približne 70 odborníkov a rozhodujúce boli zálohy.</span> <span class="s"><sup>10</sup>Po obnove úrad uviedol, že všetky dáta sú celé a vlastnícke práva nikto nezmenil.</span> <span class="s"><sup>11</sup>Prvé služby kataster znovu spustil 28. februára 2025, teda približne po 54 dňoch; ďalšie pribúdali v marci.</span> <span class="s"><sup>12</sup>Útok vyvolal politickú debatu o tom, ktorý úrad a ktorý minister nesie za bezpečnosť katastra zodpovednosť.</span> <span class="s"><sup>13</sup>Vláda následne schválila približne 19 miliónov eur na obnovu a nový systém katastra.</span></p></div>
+  <div class="answers">
+    <div class="tag">Tvoja analýza · max. 10 b</div>
+    <fieldset class="q"><legend>1. Ako incident klasifikuješ? <span class="pts">1 b</span></legend>
+      <label><input type="radio" name="i1_typ" value="kybernetický"> kybernetický</label>
+      <label><input type="radio" name="i1_typ" value="informačný"> informačný</label>
+      <label><input type="radio" name="i1_typ" value="hybridný"> hybridný</label>
+    </fieldset>
+    <label class="q"><span>2. Čo presne bolo zasiahnuté (systémy, dáta, ľudia)? Ktorá vrstva kyberpriestoru, ak nejaká? <span class="pts">1 b</span></span><textarea name="i1_zasiahnute" rows="3"></textarea></label>
+    <label class="q"><span>3. Aké techniky a nástroje útočník použil? Pomenuj ich odbornými pojmami. <span class="pts">2 b</span></span><textarea name="i1_techniky" rows="3"></textarea></label>
+    <label class="q"><span>4. Čo bolo <b>cieľom</b> útoku a čo boli <b>následky</b>? Rozlíš ich. <span class="pts">2 b</span></span><textarea name="i1_ciel" rows="4"></textarea></label>
+    <label class="q"><span>5. Je za útokom naratív (príbeh šírený cez siete, články, komentáre…), ktorý má ovplyvniť, čo si ľudia myslia? Ak áno, aký a ako sa šíril? <span class="pts">1 b</span></span><textarea name="i1_narativ" rows="3"></textarea></label>
+    <fieldset class="q"><legend>6. Ktoré vlastnosti triády CIA boli narušené? Ku každej zaškrtnutej napíš prečo. <span class="pts">1 b</span></legend>
+      <label><input type="checkbox" name="i1_cia_c" value="C"> C – dôvernosť</label>
+      <label><input type="checkbox" name="i1_cia_i" value="I"> I – integrita</label>
+      <label><input type="checkbox" name="i1_cia_a" value="A"> A – dostupnosť</label>
+      <textarea name="i1_cia" rows="2"></textarea>
+    </fieldset>
+    <label class="q"><span>7. Odôvodni svoju klasifikáciu (aspoň 5 viet). Odvolávaj sa na čísla viet zo správy. Uveď aj, čo by mohlo hovoriť <b>pre inú</b> klasifikáciu a prečo si sa pre ňu nerozhodol/a. <span class="pts">2 b</span></span><textarea name="i1_odov" rows="7"></textarea></label>
+  </div>
+</section>
+<section class="inc" id="inc2">
+  <div class="inc-head"><span class="badge">2</span><div><h2>Doppelganger</h2><div class="meta">Európa a USA · 2022–2024</div></div></div>
+  <div class="report"><div class="tag">Správa o incidente</div><p><span class="s"><sup>1</sup>V septembri 2022 zverejnila nezávislá organizácia EU DisinfoLab správu o kampani, ktorú nazvala Doppelganger (nem. dvojník).</span> <span class="s"><sup>2</sup>Kampaň bežala najmenej od mája 2022.</span> <span class="s"><sup>3</sup>Jej autori vytvorili falošné kópie webov známych médií, napríklad Der Spiegel, Le Monde, Le Figaro, Washington Post či Fox News, a tiež webu NATO.</span> <span class="s"><sup>4</sup>Kópie vyzerali takmer rovnako ako originály – rovnaké logo, grafika aj rozloženie; líšili sa len adresou, napríklad inou koncovkou domény (nato.ws namiesto nato.int).</span> <span class="s"><sup>5</sup>Na falošné weby vkladali vymyslené články, ktoré pôsobili ako bežné správy daného média.</span> <span class="s"><sup>6</sup>Články opakovali niekoľko hlavných tém: sankcie proti Rusku nefungujú, Západ je rusofóbny, ukrajinskí vojaci sú neonacisti a ukrajinskí utečenci zaťažujú Európu.</span> <span class="s"><sup>7</sup>Odkazy na články šírili tisíce falošných účtov (botov) na Facebooku a X a časť príspevkov bola zaplatená ako reklama.</span> <span class="s"><sup>8</sup>Odkazy viedli cez viacero presmerovaní, aby ich platformy ťažšie zachytili a zablokovali.</span> <span class="s"><sup>9</sup>Neskôr operátori na tvorbu textov používali aj generatívnu umelú inteligenciu; OpenAI v máji 2024 súvisiace účty zrušila.</span> <span class="s"><sup>10</sup>Hlavnými cieľovými krajinami boli Nemecko, Francúzsko, USA a Ukrajina.</span> <span class="s"><sup>11</sup>Vyšetrovania kampaň pripísali ruským firmám Social Design Agency a Structura.</span> <span class="s"><sup>12</sup>Európska únia na tieto firmy v júli 2023 uvalila sankcie.</span> <span class="s"><sup>13</sup>V septembri 2024 americké ministerstvo spravodlivosti zabavilo 32 internetových domén kampane.</span> <span class="s"><sup>14</sup>Do počítačových systémov samotných médií útočníci nevnikli – originálne weby zostali nedotknuté.</span></p></div>
+  <div class="answers">
+    <div class="tag">Tvoja analýza · max. 10 b</div>
+    <fieldset class="q"><legend>1. Ako incident klasifikuješ? <span class="pts">1 b</span></legend>
+      <label><input type="radio" name="i2_typ" value="kybernetický"> kybernetický</label>
+      <label><input type="radio" name="i2_typ" value="informačný"> informačný</label>
+      <label><input type="radio" name="i2_typ" value="hybridný"> hybridný</label>
+    </fieldset>
+    <label class="q"><span>2. Čo presne bolo zasiahnuté (systémy, dáta, ľudia)? Ktorá vrstva kyberpriestoru, ak nejaká? <span class="pts">1 b</span></span><textarea name="i2_zasiahnute" rows="3"></textarea></label>
+    <label class="q"><span>3. Aké techniky a nástroje útočník použil? Pomenuj ich odbornými pojmami. <span class="pts">2 b</span></span><textarea name="i2_techniky" rows="3"></textarea></label>
+    <label class="q"><span>4. Čo bolo <b>cieľom</b> útoku a čo boli <b>následky</b>? Rozlíš ich. <span class="pts">2 b</span></span><textarea name="i2_ciel" rows="4"></textarea></label>
+    <label class="q"><span>5. Je za útokom naratív (príbeh šírený cez siete, články, komentáre…), ktorý má ovplyvniť, čo si ľudia myslia? Ak áno, aký a ako sa šíril? <span class="pts">1 b</span></span><textarea name="i2_narativ" rows="3"></textarea></label>
+    <fieldset class="q"><legend>6. Ktoré vlastnosti triády CIA boli narušené? Ku každej zaškrtnutej napíš prečo. <span class="pts">1 b</span></legend>
+      <label><input type="checkbox" name="i2_cia_c" value="C"> C – dôvernosť</label>
+      <label><input type="checkbox" name="i2_cia_i" value="I"> I – integrita</label>
+      <label><input type="checkbox" name="i2_cia_a" value="A"> A – dostupnosť</label>
+      <textarea name="i2_cia" rows="2"></textarea>
+    </fieldset>
+    <label class="q"><span>7. Odôvodni svoju klasifikáciu (aspoň 5 viet). Odvolávaj sa na čísla viet zo správy. Uveď aj, čo by mohlo hovoriť <b>pre inú</b> klasifikáciu a prečo si sa pre ňu nerozhodol/a. <span class="pts">2 b</span></span><textarea name="i2_odov" rows="7"></textarea></label>
+  </div>
+</section>
+<section class="inc" id="inc3">
+  <div class="inc-head"><span class="badge">3</span><div><h2>Twitter a bitcoinový podvod</h2><div class="meta">USA · júl 2020</div></div></div>
+  <div class="report"><div class="tag">Správa o incidente</div><p><span class="s"><sup>1</sup>Večer 15. júla 2020 sa na Twitteri objavili takmer rovnaké príspevky z účtov Baracka Obamu, Joea Bidena, Billa Gatesa, Elona Muska, firmy Apple či Uber.</span> <span class="s"><sup>2</sup>Príspevky sľubovali, že každý, kto pošle bitcoiny na uvedenú adresu, dostane späť dvojnásobok; niektoré to podávali ako pomoc počas pandémie COVID‑19.</span> <span class="s"><sup>3</sup>Príspevky nenapísali vlastníci účtov – účty prevzali útočníci.</span> <span class="s"><sup>4</sup>Útočníci najprv telefonovali zamestnancom Twitteru a vydávali sa za kolegov z internej IT podpory (tzv. phone spear phishing).</span> <span class="s"><sup>5</sup>Takto získali prihlasovacie údaje niekoľkých zamestnancov a cez ne prístup k internému administrátorskému nástroju.</span> <span class="s"><sup>6</sup>Nástroj umožňoval meniť e‑mailové adresy pri účtoch a obnovovať k nim prístup.</span> <span class="s"><sup>7</sup>Útočníci zasiahli 130 účtov, z 45 z nich poslali podvodné príspevky.</span> <span class="s"><sup>8</sup>Pri 36 účtoch mali prístup k súkromným správam a pri 8 účtoch stiahli všetky dáta.</span> <span class="s"><sup>9</sup>Na hlavnú bitcoinovú peňaženku prišlo za niekoľko minút viac ako 320 platieb v hodnote vyše 110 000 dolárov.</span> <span class="s"><sup>10</sup>Twitter na niekoľko hodín zablokoval možnosť písať príspevky všetkým overeným účtom.</span> <span class="s"><sup>11</sup>Hlavným organizátorom bol 17‑ročný Graham Ivan Clark z Floridy, ktorý dostal trest 3 roky väzenia.</span> <span class="s"><sup>12</sup>Ďalší účastník, Joseph James O'Connor, bol v roku 2023 odsúdený na 5 rokov.</span> <span class="s"><sup>13</sup>Twitter po útoku zaviedol pre zamestnancov hardvérové bezpečnostné kľúče a školenia o sociálnom inžinierstve.</span></p></div>
+  <div class="answers">
+    <div class="tag">Tvoja analýza · max. 10 b</div>
+    <fieldset class="q"><legend>1. Ako incident klasifikuješ? <span class="pts">1 b</span></legend>
+      <label><input type="radio" name="i3_typ" value="kybernetický"> kybernetický</label>
+      <label><input type="radio" name="i3_typ" value="informačný"> informačný</label>
+      <label><input type="radio" name="i3_typ" value="hybridný"> hybridný</label>
+    </fieldset>
+    <label class="q"><span>2. Čo presne bolo zasiahnuté (systémy, dáta, ľudia)? Ktorá vrstva kyberpriestoru, ak nejaká? <span class="pts">1 b</span></span><textarea name="i3_zasiahnute" rows="3"></textarea></label>
+    <label class="q"><span>3. Aké techniky a nástroje útočník použil? Pomenuj ich odbornými pojmami. <span class="pts">2 b</span></span><textarea name="i3_techniky" rows="3"></textarea></label>
+    <label class="q"><span>4. Čo bolo <b>cieľom</b> útoku a čo boli <b>následky</b>? Rozlíš ich. <span class="pts">2 b</span></span><textarea name="i3_ciel" rows="4"></textarea></label>
+    <label class="q"><span>5. Je za útokom naratív (príbeh šírený cez siete, články, komentáre…), ktorý má ovplyvniť, čo si ľudia myslia? Ak áno, aký a ako sa šíril? <span class="pts">1 b</span></span><textarea name="i3_narativ" rows="3"></textarea></label>
+    <fieldset class="q"><legend>6. Ktoré vlastnosti triády CIA boli narušené? Ku každej zaškrtnutej napíš prečo. <span class="pts">1 b</span></legend>
+      <label><input type="checkbox" name="i3_cia_c" value="C"> C – dôvernosť</label>
+      <label><input type="checkbox" name="i3_cia_i" value="I"> I – integrita</label>
+      <label><input type="checkbox" name="i3_cia_a" value="A"> A – dostupnosť</label>
+      <textarea name="i3_cia" rows="2"></textarea>
+    </fieldset>
+    <label class="q"><span>7. Odôvodni svoju klasifikáciu (aspoň 5 viet). Odvolávaj sa na čísla viet zo správy. Uveď aj, čo by mohlo hovoriť <b>pre inú</b> klasifikáciu a prečo si sa pre ňu nerozhodol/a. <span class="pts">2 b</span></span><textarea name="i3_odov" rows="7"></textarea></label>
+  </div>
+</section>
+
+  <div class="card" style="margin-top:40px">
+    <div class="tag">Odovzdanie</div>
+    <p style="margin:0">Skontroluj, či máš vyplnené všetky otázky pri všetkých incidentoch (3). Potom stiahni súbor s odpoveďami a odovzdaj ho.</p>
+    <div class="submit"><button class="btn" id="dl">Stiahnuť odpovede</button><button class="btn ghost" onclick="window.print()">Vytlačiť / PDF</button><span class="saved" id="saved"></span></div>
+  </div>
+</div>
+<script>
+(function(){
+  const KEY='kbz-04_P-cast2';
+  const root=document.documentElement;
+  try{const t=localStorage.getItem('kbz-theme'); if(t) root.dataset.theme=t;}catch(e){}
+  document.getElementById('themeBtn').onclick=()=>{const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;root.dataset.theme=dark?'light':'dark';try{localStorage.setItem('kbz-theme',root.dataset.theme)}catch(e){}};
+  const fields=()=>[...document.querySelectorAll('input[name],textarea[name]')];
+  function save(){const d={};fields().forEach(f=>{if(f.type==='radio'){if(f.checked)d[f.name]=f.value}else if(f.type==='checkbox'){d[f.name]=f.checked}else d[f.name]=f.value});
+    try{localStorage.setItem(KEY,JSON.stringify(d));document.getElementById('saved').textContent='uložené v prehliadači '+new Date().toLocaleTimeString('sk-SK')}catch(e){}}
+  function load(){let d={};try{d=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+    fields().forEach(f=>{if(!(f.name in d))return;if(f.type==='radio')f.checked=(d[f.name]===f.value);else if(f.type==='checkbox')f.checked=!!d[f.name];else f.value=d[f.name]})}
+  load(); document.addEventListener('input',save); document.addEventListener('change',save);
+  document.getElementById('dl').onclick=function(){
+    const v=n=>{const el=document.querySelector('[name="'+n+'"]');return el?el.value.trim():''};
+    const meno=v('meno')||'bez_mena';
+    let out='KBZ · 04_P Analýza incidentov – 2. časť (samostatne)\nMeno: '+meno+'\nDátum: '+new Date().toLocaleString('sk-SK')+'\n';
+    document.querySelectorAll('section.inc').forEach((s,ix)=>{
+      const p='i'+(ix+1), title=s.querySelector('h2').textContent;
+      const typ=(s.querySelector('input[name="'+p+'_typ"]:checked')||{}).value||'—';
+      const cia=['c','i','a'].filter(x=>s.querySelector('[name="'+p+'_cia_'+x+'"]').checked).map(x=>x.toUpperCase()).join(', ')||'—';
+      out+='\n==============================\n'+(ix+1)+'. '+title+'\n==============================\n';
+      out+='1. Klasifikácia: '+typ+'\n';
+      out+='\n2. Zasiahnuté / vrstva:\n'+(v(p+'_zasiahnute')||'—')+'\n';
+      out+='\n3. Techniky a nástroje:\n'+(v(p+'_techniky')||'—')+'\n';
+      out+='\n4. Cieľ vs. následky:\n'+(v(p+'_ciel')||'—')+'\n';
+      out+='\n5. Naratív:\n'+(v(p+'_narativ')||'—')+'\n';
+      out+='\n6. CIA: '+cia+'\n'+(v(p+'_cia')||'—')+'\n';
+      out+='\n7. Odôvodnenie:\n'+(v(p+'_odov')||'—')+'\n';
+    });
+    const blob=new Blob([out],{type:'text/plain;charset=utf-8'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download='KBZ_04_P_cast2_'+meno.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'_')+'.txt';
+    document.body.appendChild(a);a.click();a.remove();
+  };
+})();
+</script>
+</body>
+</html>
