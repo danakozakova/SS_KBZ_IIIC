@@ -8,11 +8,11 @@ DIGITÁLNA IDENTITA: https://claude.ai/artifact/1RBrUvDoq92otHPXaqSJSW
 KYBERNETICKÝ PRIESTOR: 
 
 - https://danakozakova.github.io/SS_KBZ_IIIC/04_01_KBZ_kde_sa_bojuje_premietanie_studenti.html
-- https://danakozakova.github.io/SS_KBZ_IIIC/04_P_KBZ_analyza_incidentov_cast1_spolocne_zadanie.html
+- https://danakozakova.github.io/SS_KBZ_IIIC/04_02_KBZ_analyza_incidentov_cast1_spolocne_zadanie.html
 
 COOKIES:
 - https://github.com/danakozakova/SS_KBZ_IIIC/blob/main/05_01_KBZ_cookies_PL_studenti.md
 - https://danakozakova.github.io/SS_KBZ_IIIC/05_02_KBZ_cookies_vlastna_cookie_studenti.html
 
 KYBERNETICKÝ PRIESTOR - AKTUÁLNE:
-- https://danakozakova.github.io/SS_KBZ_IIIC/04_P_KBZ_analyza_incidentov_cast1_spolocne_zadanie.html
+- https://danakozakova.github.io/SS_KBZ_IIIC/04_03_KBZ_narativy_krakov_premietanie_ucitel.html
