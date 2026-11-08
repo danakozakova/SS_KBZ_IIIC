@@ -9,6 +9,7 @@ KYBERNETICKÝ PRIESTOR:
 
 - https://danakozakova.github.io/SS_KBZ_IIIC/04_01_KBZ_kde_sa_bojuje_premietanie_studenti.html
 - https://danakozakova.github.io/SS_KBZ_IIIC/04_02_KBZ_analyza_incidentov_cast1_spolocne_zadanie.html
+- https://danakozakova.github.io/SS_KBZ_IIIC/04_02_KBZ_analyza_incidentov_cast2_samostatne_zadanie.html
 
 COOKIES:
 - https://github.com/danakozakova/SS_KBZ_IIIC/blob/main/05_01_KBZ_cookies_PL_studenti.md
