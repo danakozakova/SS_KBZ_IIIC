@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Naratív v priamom prenose · pracovný list</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e9ecf2;--surface:#fff;--surface-2:#f3f5f9;--ink:#171a22;--muted:#5c6474;--faint:#8a91a1;--line:#d9dee7;--line-strong:#c3cad6;--accent:#0d7a80;--accent-ink:#0a5c61;--accent-soft:#d7ecec;--warn:#c9820a;--warn-soft:#fbefd6;--bad:#cf3d3d}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0e1017;--surface:#171b25;--surface-2:#1f2430;--ink:#e8ebf2;--muted:#a2aab9;--faint:#78808f;--line:#2a303d;--line-strong:#3a4252;--accent:#33b0b6;--accent-ink:#5ecacf;--accent-soft:#14343a;--warn-soft:#352914}}
+:root[data-theme="dark"]{--bg:#0e1017;--surface:#171b25;--surface-2:#1f2430;--ink:#e8ebf2;--muted:#a2aab9;--faint:#78808f;--line:#2a303d;--line-strong:#3a4252;--accent:#33b0b6;--accent-ink:#5ecacf;--accent-soft:#14343a;--warn-soft:#352914}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;line-height:1.55}
+.wrap{max-width:820px;margin:0 auto;padding:28px 18px 80px}
+h1,h2{font-family:'Archivo',sans-serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,4.5vw,40px);line-height:1.1}
+h2{font-size:21px;margin:0 0 4px}
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.lock{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff}
+.lock svg{width:15px;height:15px}
+.lead{color:var(--muted);font-size:17px;margin:.5em 0 0}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:6px}
+.sec{margin-top:26px}
+.sec-num{font-family:'Archivo';font-weight:800;color:var(--accent);margin-right:8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-top:14px}
+.strip{border-left:6px solid var(--accent);background:var(--surface);padding:14px 20px;border-radius:0 12px 12px 0;margin-top:14px}
+.warn{background:var(--warn-soft);border-radius:12px;padding:12px 18px;margin-top:14px;font-size:15px}
+ol,ul{padding-left:1.3em;margin:.4em 0}
+li{margin:.12em 0}
+.report{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-top:12px;font-size:16px}
+.report p{margin:0}
+.s sup{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent-ink);background:var(--accent-soft);border-radius:4px;padding:0 4px;margin:0 3px 0 2px}
+.pin{background:var(--accent-soft);border-radius:10px;padding:10px 14px;margin-top:12px;font-size:15px}
+.pin b{color:var(--accent-ink)}
+.src{font-size:14px}
+.src a{color:var(--accent-ink);word-break:break-word}
+.src li{margin:.3em 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin-top:10px}
+td,th{border:1px solid var(--line-strong);padding:7px 9px;text-align:left;vertical-align:top}
+th{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface-2)}
+.nn{width:26px;text-align:center;font-family:'Archivo';font-weight:800;color:var(--accent)}
+.fillcell{height:46px}
+.rub td:first-child{width:150px;font-weight:600}
+.lines{border:1px solid var(--line-strong);border-radius:10px;min-height:54px;margin-top:8px;background:repeating-linear-gradient(transparent,transparent 25px,var(--line) 25px,var(--line) 26px);background-position:0 8px}
+.lines.sm{min-height:28px}
+.lines.lg{min-height:82px}
+.names{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px}
+.names label{flex:1 1 240px;font-weight:600;font-size:14px}
+.names .ln{border-bottom:1.5px solid var(--line-strong);height:26px;margin-top:4px}
+.theme{position:fixed;top:12px;right:14px;background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
+.printbtn{font:inherit;font-weight:600;background:var(--accent);color:#fff;border:0;border-radius:10px;padding:11px 18px;cursor:pointer;margin-top:18px}
+.foot{margin-top:22px;border-top:2px solid var(--line-strong);padding-top:14px;color:var(--muted);font-size:13px}
+@media print{
+  :root{--bg:#fff;--surface:#fff;--surface-2:#f4f6f9}
+  .theme,.printbtn{display:none}
+  body{background:#fff}
+  .wrap{max-width:none;padding:0 6mm}
+  .newpage{break-before:page}
+  .report,.card,.strip,table,.lines{break-inside:avoid}
+  @page{size:A4;margin:12mm 10mm}
+}
+</style>
+</head>
+<body>
+<button class="theme" id="themeBtn" title="Svetlý / tmavý režim">◐</button>
+<div class="wrap">
+  <div class="kicker"><span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>Kybernetická bezpečnosť · SPŠ IT Ignáca Gessaya</div>
+  <h1>Naratív v priamom prenose<br><span style="font-size:.5em;color:var(--muted)">04_03 · pracovný list pre dvojicu</span></h1>
+  <p class="lead">Udalosť spred dvoch dní a informačná vlna okolo nej. Vašou úlohou je oddeliť <b>fakty</b> od <b>naratívov</b>, pomenovať techniky manipulácie a celú vlnu zaškatuľkovať našou rubrikou.</p>
+
+  <div class="names">
+    <label>Meno 1<div class="ln"></div></label>
+    <label>Meno 2<div class="ln"></div></label>
+    <label style="flex:0 1 120px">Trieda / dátum<div class="ln"></div></label>
+  </div>
+
+  <div class="warn"><b>Vecný tón.</b> Predmetom analýzy je <b>informačná vlna okolo udalosti</b>, nie obete ani páchateľ. Nepracujeme s menom páchateľa ani so žiadnymi „fotkami“ z internetu — tie môžu byť falošné.</div>
+
+  <!-- 1 -->
+  <div class="sec">
+    <h2><span class="sec-num">1</span>Čo sa naozaj stalo — overené fakty</h2>
+    <div class="tag">Prečítajte si; vety sú očíslované — v odpovediach sa na ne odvolávajte (napr. „veta 5“)</div>
+    <div class="report"><p class="s">
+      <span><sup>1</sup>V sobotu 7. 11. 2026 okolo 15:00 sa na Hlavnom námestí (Rynek Główny) v Krakove strieľalo.</span>
+      <span><sup>2</sup>Zomrelo 6 ľudí a približne 15 bolo zranených; dvaja policajti sa pri zásahu ťažko zranili.</span>
+      <span><sup>3</sup>Páchateľom bol poľský občan (~24 r.) s legálne drženou zbraňou; polícia ho postrelila a zadržala.</span>
+      <span><sup>4</sup>Podľa poľského ministra vnútra sa zaujímal o krajne pravicové ideológie; motív sa stále vyšetruje.</span>
+      <span><sup>5</sup>Prvá policajná hliadka zasiahla 23 sekúnd po nahlásení, prvé výstrely padli približne po 3 minútach.</span>
+      <span><sup>6</sup>Do približne 3 hodín po streľbe sa internetom rozbehla koordinovaná dezinformačná vlna z proruských účtov a portálov (šírená z Grécka, Španielska, Vietnamu, Číny aj Bulharska).</span>
+      <span><sup>7</sup>Poľská tlačová agentúra PAP a fact-checkeri pomenovali päť hlavných nepravdivých tvrdení o udalosti.</span>
+    </p></div>
+    <div class="pin"><b>Dve veci, ktoré naratívy priamo popierajú:</b> páchateľ bol <b>Poliak</b> (nie cudzinec/Ukrajinec) a jeho krajne pravicové zameranie bolo <b>domáce</b>; a <b>polícia na mieste bola</b> a zasiahla rýchlo.</div>
+  </div>
+
+  <!-- zdroje -->
+  <div class="sec">
+    <h2><span class="sec-num">+</span>Zdroje na overenie</h2>
+    <div class="card src">
+      <p style="margin:0 0 6px">Keď si pri niektorom naratíve nie ste istí, over­te ho v týchto fact-checkoch. Sú v poľštine — v prehliadači použite <b>Preložiť stránku</b> (pravé tlačidlo myši → Preložiť do slovenčiny / angličtiny).</p>
+      <ul>
+        <li>OKO.press — „poschodová“ dezinformácia, medzinárodné šírenie: <a href="https://oko.press/pietrowa-dezinformacja-o-zamachowcu-z-krakowa-kreml-manipuluje">oko.press</a></li>
+        <li>Interia / PAP — 5 nepravdivých scenárov s vyvrátením: <a href="https://biznes.interia.pl/gospodarka/news-klamstwa-po-zamachu-w-krakowie-wskazano-piec-falszywych-scen,nId,23570776">biznes.interia.pl</a></li>
+        <li>Rzeczpospolita — 5 falošných naratívov: <a href="https://rp.pl/kraj/art45460481-zamach-w-krakowie-piec-falszywych-narracji-ktore-pojawily-sie-w-internecie">rp.pl</a></li>
+        <li>Radio Kraków — AI fotky, „druhý útočník“, „vojak“: <a href="https://radiokrakow.pl/wiadomosci/krakow/falszywe-informacje-po-tragedii-w-krakowie-od-zdjec-ai-po-doniesienia-o-drugim-napastniku/187478">radiokrakow.pl</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="sec newpage">
+    <h2><span class="sec-num">2</span>Sedem naratívov — vaša analýza</h2>
+    <div class="tag">Dostali ste 7 kartičiek. Ku každému naratívu vyplňte riadok</div>
+    <div class="card" style="padding:12px 16px;font-size:14.5px">
+      <b>Kľúčová otázka v treťom stĺpci:</b> tvrdí naratív niečo, čo sa dá <b>overiť faktom</b> (potom ho fakt buď potvrdí, alebo vyvráti)? Alebo len podsúva <b>rámec/pocit</b>, ktorý sa nedá „odfaktovať“, len pomenovať?
+    </div>
+    <table>
+      <tr><th class="nn">#</th><th>Technika manipulácie (pomenuj)</th><th style="width:110px">Fakt, alebo rámec/pocit?</th><th>Čo ho vyvracia / ako ho rozpoznám</th></tr>
+      <tr><td class="nn">1</td><td class="fillcell"></td><td></td><td></td></tr>
+      <tr><td class="nn">2</td><td class="fillcell"></td><td></td><td></td></tr>
+      <tr><td class="nn">3</td><td class="fillcell"></td><td></td><td></td></tr>
+      <tr><td class="nn">4</td><td class="fillcell"></td><td></td><td></td></tr>
+      <tr><td class="nn">5</td><td class="fillcell"></td><td></td><td></td></tr>
+      <tr><td class="nn">6</td><td class="fillcell"></td><td></td><td></td></tr>
+      <tr><td class="nn">7</td><td class="fillcell"></td><td></td><td></td></tr>
+    </table>
+    <div class="warn" style="font-size:14px"><b>Nápoveda:</b> fabrikácia dôkazu · presun viny (scapegoating) · podkopávanie dôvery v inštitúcie · zaplavenie fámami (firehose) · konšpiračné „cui bono“ · emocionálne heslá · preempčná diskreditácia · sugestívne otázky (JAQ) · whataboutizmus. Nemusia sedieť 1:1 — vyberte, čo najlepšie vystihuje daný naratív.</div>
+  </div>
+
+  <!-- 3 -->
+  <div class="sec newpage">
+    <h2><span class="sec-num">3</span>Zatrieďte celú vlnu</h2>
+    <div class="tag">Pozor: samotná streľba nie je kyber ani informačný priestor. Do rubriky vstupuje informačná reakcia okolo nej</div>
+    <table class="rub">
+      <tr><th style="width:150px">Rubrika</th><th>Vaše zaradenie + prečo</th></tr>
+      <tr><td>Kôpka<br><span style="font-weight:400;color:var(--muted);font-size:12.5px">kyber / informačný / hybrid</span></td><td class="fillcell"></td></tr>
+      <tr><td>Vrstva</td><td class="fillcell"></td></tr>
+      <tr><td>Incident / útok</td><td class="fillcell"></td></tr>
+      <tr><td>Dezinfo / misinfo</td><td class="fillcell"></td></tr>
+      <tr><td>Cieľ vs. následok</td><td class="fillcell"></td></tr>
+      <tr><td>Triáda CIA</td><td class="fillcell"></td></tr>
+    </table>
+    <div class="tag" style="margin-top:14px">Zhrňte jednou vetou</div>
+    <div class="lines"></div>
+  </div>
+
+  <!-- 4 -->
+  <div class="sec">
+    <h2><span class="sec-num">4</span>Záver <span style="font-size:14px;font-weight:400;color:var(--muted)">(každý sám za seba)</span></h2>
+    <div class="tag">Ktorý zo 7 naratívov by na teba zabral najskôr — a prečo? (1–2 vety)</div>
+    <div class="lines lg"></div>
+    <p style="font-size:13.5px;color:var(--muted);margin:.5em 0 0">Priznať „toto by na mňa zabralo“ nie je hlúposť — ukazuje to, že chápeš, že ide o <b>techniku</b>, nie o to, kto je naivný.</p>
+  </div>
+
+  <!-- obrana -->
+  <div class="strip" style="margin-top:22px">
+    <div class="tag">4 reflexy obrany po situácii</div>
+    <ol style="margin:.2em 0">
+      <li><b>Spomaľ.</b> V prvých hodinách po tragédii je vákuum — počkaj na potvrdenie od služieb a veľkých médií.</li>
+      <li><b>Over zdroj.</b> Kto to tvrdí? Anonymný účet, neznámy portál, doména napodobňujúca médium?</li>
+      <li><b>Fakt, alebo pocit?</b> Dá sa to overiť — alebo je to otázka/rámec, čo ťa má nasmerovať?</li>
+      <li><b>Obrázky klamú.</b> AI „ostré“ fotky či pridané symboly sú bežný trik; nezdieľaj záber ako dôkaz.</li>
+    </ol>
+    <p style="margin:.4em 0 0"><b>Keď neviem, nezdieľam</b> — najlacnejšia obrana, ktorú má každý.</p>
+  </div>
+
+  <button class="printbtn" onclick="window.print()">Vytlačiť / uložiť ako PDF</button>
+  <div class="foot">KBZ · III.C · Téma 04 Kybernetický a informačný priestor · 04_03 Naratív v priamom prenose · pracovný list pre dvojicu</div>
+</div>
+<script>
+(function(){
+  var root=document.documentElement;
+  try{var t=localStorage.getItem('kbz-theme'); if(t) root.dataset.theme=t;}catch(e){}
+  document.getElementById('themeBtn').onclick=function(){
+    var dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme=dark?'light':'dark';
+    try{localStorage.setItem('kbz-theme',root.dataset.theme)}catch(e){}
+  };
+})();
+</script>
+</body>
+</html>
