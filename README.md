@@ -17,3 +17,4 @@ COOKIES:
 
 KYBERNETICKÝ PRIESTOR - AKTUÁLNE:
 - https://danakozakova.github.io/SS_KBZ_IIIC/04_03_KBZ_narativy_krakov_premietanie_ucitel.html
+- https://danakozakova.github.io/SS_KBZ_IIIC/04_03_KBZ_narativy_krakov_zadanie.html
