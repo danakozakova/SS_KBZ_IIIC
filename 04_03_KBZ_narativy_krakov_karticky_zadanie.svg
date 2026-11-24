@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- KBZ 04_03 · Kartičky naratívov (Krakov) · A4, 8 kariet (2 x 4): 7 naratívov + 1 pomocná karta s faktami
+     Text upravíš priamo: každá karta je <g id="karta-N">.
+     .hdr = názov naratívu vedľa čísla, .txt = znenie; každý riadok je jeden <tspan>.
+     Riadky sa nezalamujú samy — pri dlhšom texte pridaj/uber <tspan x=".." dy="5.5">. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@700&amp;family=IBM+Plex+Sans:wght@400;600&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap');
+    .page { fill:#ffffff; }
+    .cut  { fill:none; stroke:#8a91a1; stroke-width:0.3; stroke-dasharray:2 1.5; }
+    .badge{ fill:#0d7a80; }
+    .badgeF{ fill:#0a5c61; }
+    .num  { font-family:'Archivo',Arial,sans-serif; font-weight:700; font-size:5.2px; fill:#ffffff; }
+    .hdr  { font-family:'IBM Plex Sans',Arial,sans-serif; font-weight:600; font-size:4.1px; fill:#0a5c61; }
+    .txt  { font-family:'IBM Plex Sans',Arial,sans-serif; font-size:4.3px; fill:#171a22; }
+    .head { font-family:'IBM Plex Mono',monospace; font-size:3px; letter-spacing:0.25px; fill:#5c6474; }
+  </style>
+  <rect class="page" width="210" height="297"/>
+  <text class="head" x="10" y="9">KYBERNETICKÁ BEZPEČNOSŤ · TÉMA 04 · 04_03 NARATÍVY (KRAKOV) · KARTIČKY NA VYSTRIHNUTIE (1 SADA = 1 DVOJICA)</text>
+
+  <g id="karta-1">
+    <rect class="cut" x="10" y="16" width="95" height="60" rx="2"/>
+    <rect class="badge" x="17" y="20.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="21.5" y="26.9" text-anchor="middle">1</text>
+    <text class="hdr" x="29.5" y="26.4">Útok ako zámienka (false flag)</text>
+    <text class="txt" y="37">
+      <tspan x="17" dy="0">„Streľba bola podozrivo načasovaná,</tspan>
+      <tspan x="17" dy="5.5">aby Tuskova vláda mala dôvod</tspan>
+      <tspan x="17" dy="5.5">vyhlásiť výnimočný stav alebo zákaz</tspan>
+      <tspan x="17" dy="5.5">protestov počas krízy okolo</tspan>
+      <tspan x="17" dy="5.5">ústavného súdu.“</tspan>
+    </text>
+  </g>
+
+  <g id="karta-2">
+    <rect class="cut" x="105" y="16" width="95" height="60" rx="2"/>
+    <rect class="badge" x="112" y="20.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="116.5" y="26.9" text-anchor="middle">2</text>
+    <text class="hdr" x="124.5" y="26.4">Ukrajinská / nacistická stopa</text>
+    <text class="txt" y="37">
+      <tspan x="112" dy="0">Nepodložená snaha spojiť páchateľa</tspan>
+      <tspan x="112" dy="5.5">s Ukrajinou — údajná výstroj alebo</tspan>
+      <tspan x="112" dy="5.5">symbol „Totenkopf“ na oblečení.</tspan>
+    </text>
+  </g>
+
+  <g id="karta-3">
+    <rect class="cut" x="10" y="80" width="95" height="60" rx="2"/>
+    <rect class="badge" x="17" y="84.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="21.5" y="90.9" text-anchor="middle">3</text>
+    <text class="hdr" x="29.5" y="90.4">Vláda klame, polícia zlyhala</text>
+    <text class="txt" y="101">
+      <tspan x="17" dy="0">„Polícia aj minister pri incidente</tspan>
+      <tspan x="17" dy="5.5">chýbali.“ Tragédia ako palivo</tspan>
+      <tspan x="17" dy="5.5">vnútropolitického boja a nedôvery</tspan>
+      <tspan x="17" dy="5.5">v štát.</tspan>
+    </text>
+  </g>
+
+  <g id="karta-4">
+    <rect class="cut" x="105" y="80" width="95" height="60" rx="2"/>
+    <rect class="badge" x="112" y="84.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="116.5" y="90.9" text-anchor="middle">4</text>
+    <text class="hdr" x="124.5" y="90.4">Migranti a rozklad Západu</text>
+    <text class="txt" y="101">
+      <tspan x="112" dy="0">Vina na EÚ a migráciu: „Poľsko je</tspan>
+      <tspan x="112" dy="5.5">ďalšie Francúzsko“, „Brusel prelial</tspan>
+      <tspan x="112" dy="5.5">poľskú krv“.</tspan>
+    </text>
+  </g>
+
+  <g id="karta-5">
+    <rect class="cut" x="10" y="144" width="95" height="60" rx="2"/>
+    <rect class="badge" x="17" y="148.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="21.5" y="154.9" text-anchor="middle">5</text>
+    <text class="hdr" x="29.5" y="154.4">Preventívna obhajoba Ruska</text>
+    <text class="txt" y="165">
+      <tspan x="17" dy="0">„Aj tak to zvalia na Rusko“ —</tspan>
+      <tspan x="17" dy="5.5">zaznie ešte skôr, než padlo</tspan>
+      <tspan x="17" dy="5.5">akékoľvek obvinenie.</tspan>
+    </text>
+  </g>
+
+  <g id="karta-6">
+    <rect class="cut" x="105" y="144" width="95" height="60" rx="2"/>
+    <rect class="badge" x="112" y="148.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="116.5" y="154.9" text-anchor="middle">6</text>
+    <text class="hdr" x="124.5" y="154.4">Neoverené detaily</text>
+    <text class="txt" y="165">
+      <tspan x="112" dy="0">Fámy: komplici, druhý útočník,</tspan>
+      <tspan x="112" dy="5.5">zapojenie poľskej armády, údajné</tspan>
+      <tspan x="112" dy="5.5">zatajovanie národnosti páchateľa.</tspan>
+    </text>
+  </g>
+
+  <g id="karta-7">
+    <rect class="cut" x="10" y="208" width="95" height="60" rx="2"/>
+    <rect class="badge" x="17" y="212.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="21.5" y="218.9" text-anchor="middle">7</text>
+    <text class="hdr" x="29.5" y="218.4">„Len sa pýtam“ + whataboutizmus</text>
+    <text class="txt" y="229">
+      <tspan x="17" dy="0">Zdanlivo nevinné otázky („Prečo sa</tspan>
+      <tspan x="17" dy="5.5">to asi deje?“), ktoré nič netvrdia,</tspan>
+      <tspan x="17" dy="5.5">ale majú zasiať pochybnosť.</tspan>
+    </text>
+  </g>
+
+  <g id="karta-8">
+    <rect class="cut" x="105" y="208" width="95" height="60" rx="2"/>
+    <rect class="badgeF" x="112" y="212.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="116.5" y="218.9" text-anchor="middle">✓</text>
+    <text class="hdr" x="124.5" y="218.4">Overené fakty (pomôcka)</text>
+    <text class="txt" y="229">
+      <tspan x="112" dy="0">Páchateľ: poľský občan (~24 r.),</tspan>
+      <tspan x="112" dy="5.5">legálna zbraň, krajne pravicové</tspan>
+      <tspan x="112" dy="5.5">(domáce) zameranie. 6 mŕtvych.</tspan>
+      <tspan x="112" dy="5.5">Prvá hliadka 23 s po nahlásení.</tspan>
+      <tspan x="112" dy="5.5">Dezinfo vlna sa spustila do 3 hodín.</tspan>
+    </text>
+  </g>
+</svg>

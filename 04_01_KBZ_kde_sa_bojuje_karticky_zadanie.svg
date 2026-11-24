@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- KBZ 04_01 · Kartičky incidentov · A4, 10 kariet (2 x 5)
+     Text upravíš priamo: každá karta je <g id="karta-N">.
+     .hdr = miesto a dátum vedľa čísla, .txt = opis; každý riadok je jeden <tspan>.
+     Riadky sa nezalamujú samy — pri dlhšom texte pridaj/uber <tspan x=".." dy="5.5">. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTo4MjJlZjljMC04YTIzLTRmMjMtYmE1OS1lOGJmYTFlNWYyYjMAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaFIHc4ALkYlTvmfwq0/5qbQAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDplMDFmYjg1Zi1lYmIzLTQxZTUtYTliZS0xM2NjNzAxYTg5ZWZscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoyarclaLWE6RX1WRUqJxCWgAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgg0HhwyGJx+Sg/I/e76IDJo71qUmNL/1okUcezCFZZGNGkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaJEEHuZ4Ult5WzFkIIoiZX0AAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRMAAAAAAAAAAAAAAAAZGhhc2hYIGXv5k8ITxDKs74uvuzVmQQAgYlVQHm4dW8cUjD09jYUZG5hbWVuanVtYmYgbWFuaWZlc3RqZXhjbHVzaW9uc4GiZXN0YXJ0GQH5Zmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjgyMmVmOWMwLThhMjMtNGYyMy1iYTU5LWU4YmZhMWU1ZjJiMy9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjUyNmMwMTBlLTEzYjQtNGQ4MS1hMDU2LWQyYjI5NmM0NmY1MXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCDQeHDIYnH5KD8j97vogMmjvWpSY0v/WiRRx7MIVlkY0aJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFgg7e9qN1XnienDuAJkjoA93V/hJvFBCNvMXLqf3hAWigyiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFgg7pDeDnxFWxOaYLXoED9+JWRARJr+r+CUUPKQa9Ekhvh0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQOF1SA+Qd+iRC7PfPtykilJ3Olu+3XN5rQCnwYHUGKikWU5eBx/f/N/tw7lkVrZ79FoIL+a6xho5sEE77I7vTio=</c2pa:manifest></metadata>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@700&amp;family=IBM+Plex+Sans:wght@400;600&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap');
+    .page { fill:#ffffff; }
+    .cut  { fill:none; stroke:#8a91a1; stroke-width:0.3; stroke-dasharray:2 1.5; }
+    .head { font-family:'IBM Plex Mono',monospace; font-size:3px; letter-spacing:0.25px; fill:#5c6474; }
+    .badge{ fill:#0d7a80; }
+    .num  { font-family:'Archivo',Arial,sans-serif; font-weight:700; font-size:5.2px; fill:#ffffff; }
+    .hdr  { font-family:'IBM Plex Sans',Arial,sans-serif; font-weight:600; font-size:4.1px; fill:#0a5c61; }
+    .txt  { font-family:'IBM Plex Sans',Arial,sans-serif; font-size:4.3px; fill:#171a22; }
+  </style>
+  <rect class="page" width="210" height="297"/>
+  <text class="head" x="10" y="9">KYBERNETICKÁ BEZPEČNOSŤ · TÉMA 04 · KARTIČKY NA VYSTRIHNUTIE (1 SADA = 1 DVOJICA)</text>
+  <g id="karta-1">
+    <rect class="cut" x="10" y="14.0" width="95" height="55.5" rx="2"/>
+    <rect class="badge" x="17" y="18.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="21.5" y="24.9" text-anchor="middle">1</text>
+    <text class="hdr" x="29.5" y="24.4">Gruzínsko / Arménsko · 28. 3. 2011</text>
+    <text class="txt" y="35.0">
+      <tspan x="17" dy="0">75‑ročná žena pri Tbilisi kopala</tspan>
+      <tspan x="17" dy="5.5">lopatou meď a prerušila optický</tspan>
+      <tspan x="17" dy="5.5">kábel. Väčšina Arménska bola</tspan>
+      <tspan x="17" dy="5.5">niekoľko hodín bez internetu.</tspan>
+    </text>
+  </g>
+  <g id="karta-2">
+    <rect class="cut" x="105" y="14.0" width="95" height="55.5" rx="2"/>
+    <rect class="badge" x="112" y="18.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="116.5" y="24.9" text-anchor="middle">2</text>
+    <text class="hdr" x="124.5" y="24.4">Česko · 24. 10. 2023</text>
+    <text class="txt" y="35.0">
+      <tspan x="112" dy="0">DDoS útok na weby vlády,</tspan>
+      <tspan x="112" dy="5.5">ministerstva vnútra, polície a</tspan>
+      <tspan x="112" dy="5.5">pražského letiska. Prihlásila sa k</tspan>
+      <tspan x="112" dy="5.5">nemu proruská skupina</tspan>
+      <tspan x="112" dy="5.5">NoName057(16).</tspan>
+    </text>
+  </g>
+  <g id="karta-3">
+    <rect class="cut" x="10" y="69.5" width="95" height="55.5" rx="2"/>
+    <rect class="badge" x="17" y="74.0" width="9" height="9" rx="1.5"/>
+    <text class="num" x="21.5" y="80.4" text-anchor="middle">3</text>
+    <text class="hdr" x="29.5" y="79.9">Modelová situácia</text>
+    <text class="txt" y="90.5">
+      <tspan x="17" dy="0">Spolužiakovi niekto prevezme</tspan>
+      <tspan x="17" dy="5.5">Instagram a píše z neho kamarátom,</tspan>
+      <tspan x="17" dy="5.5">aby mu poslali peniaze.</tspan>
+    </text>
+  </g>
+  <g id="karta-4">
+    <rect class="cut" x="105" y="69.5" width="95" height="55.5" rx="2"/>
+    <rect class="badge" x="112" y="74.0" width="9" height="9" rx="1.5"/>
+    <text class="num" x="116.5" y="80.4" text-anchor="middle">4</text>
+    <text class="hdr" x="124.5" y="79.9">Benešov (ČR) · december 2019</text>
+    <text class="txt" y="90.5">
+      <tspan x="112" dy="0">Ransomvér Ryuk zašifroval systémy</tspan>
+      <tspan x="112" dy="5.5">nemocnice. Nemocnica týždne</tspan>
+      <tspan x="112" dy="5.5">obmedzovala prevádzku a odkladala</tspan>
+      <tspan x="112" dy="5.5">plánované operácie.</tspan>
+    </text>
+  </g>
+  <g id="karta-5">
+    <rect class="cut" x="10" y="125.0" width="95" height="55.5" rx="2"/>
+    <rect class="badge" x="17" y="129.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="21.5" y="135.9" text-anchor="middle">5</text>
+    <text class="hdr" x="29.5" y="135.4">Modelová situácia</text>
+    <text class="txt" y="146.0">
+      <tspan x="17" dy="0">Pod článkom o novom zákone sa za</tspan>
+      <tspan x="17" dy="5.5">hodinu objavia stovky komentárov z</tspan>
+      <tspan x="17" dy="5.5">čerstvo založených účtov. Všetky</tspan>
+      <tspan x="17" dy="5.5">majú takmer rovnaké vety.</tspan>
+    </text>
+  </g>
+  <g id="karta-6">
+    <rect class="cut" x="105" y="125.0" width="95" height="55.5" rx="2"/>
+    <rect class="badge" x="112" y="129.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="116.5" y="135.9" text-anchor="middle">6</text>
+    <text class="hdr" x="124.5" y="135.4">Slovensko · 28. 9. 2023</text>
+    <text class="txt" y="146.0">
+      <tspan x="112" dy="0">Dva dni pred voľbami, počas</tspan>
+      <tspan x="112" dy="5.5">moratória, sa šírila AI‑generovaná</tspan>
+      <tspan x="112" dy="5.5">(deepfake) nahrávka, v ktorej mali</tspan>
+      <tspan x="112" dy="5.5">Michal Šimečka (PS) a novinárka</tspan>
+      <tspan x="112" dy="5.5">Monika Tódová (Denník N) hovoriť o</tspan>
+      <tspan x="112" dy="5.5">manipulácii volieb.</tspan>
+    </text>
+  </g>
+  <g id="karta-7">
+    <rect class="cut" x="10" y="180.5" width="95" height="55.5" rx="2"/>
+    <rect class="badge" x="17" y="185.0" width="9" height="9" rx="1.5"/>
+    <text class="num" x="21.5" y="191.4" text-anchor="middle">7</text>
+    <text class="hdr" x="29.5" y="190.9">Francúzsko · 5. 5. 2017</text>
+    <text class="txt" y="201.5">
+      <tspan x="17" dy="0">#MacronLeaks: dva dni pred 2.</tspan>
+      <tspan x="17" dy="5.5">kolom prezidentských volieb sa</tspan>
+      <tspan x="17" dy="5.5">objavilo asi 9 GB ukradnutých</tspan>
+      <tspan x="17" dy="5.5">e‑mailov a dokumentov z kampane E.</tspan>
+      <tspan x="17" dy="5.5">Macrona, pomiešaných s</tspan>
+      <tspan x="17" dy="5.5">falzifikátmi.</tspan>
+    </text>
+  </g>
+  <g id="karta-8">
+    <rect class="cut" x="105" y="180.5" width="95" height="55.5" rx="2"/>
+    <rect class="badge" x="112" y="185.0" width="9" height="9" rx="1.5"/>
+    <text class="num" x="116.5" y="191.4" text-anchor="middle">8</text>
+    <text class="hdr" x="124.5" y="190.9">Modelová situácia</text>
+    <text class="txt" y="201.5">
+      <tspan x="112" dy="0">Babka zdieľa na Facebooku: „Zajtra</tspan>
+      <tspan x="112" dy="5.5">vypnú vodu v celom meste!“ Nie je</tspan>
+      <tspan x="112" dy="5.5">to pravda, ale ona tomu verí.</tspan>
+    </text>
+  </g>
+  <g id="karta-9">
+    <rect class="cut" x="10" y="236.0" width="95" height="55.5" rx="2"/>
+    <rect class="badge" x="17" y="240.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="21.5" y="246.9" text-anchor="middle">9</text>
+    <text class="hdr" x="29.5" y="246.4">Ukrajina → celý svet · 27. 6. 2017</text>
+    <text class="txt" y="257.0">
+      <tspan x="17" dy="0">Malvér NotPetya sa šíril cez</tspan>
+      <tspan x="17" dy="5.5">aktualizáciu ukrajinského</tspan>
+      <tspan x="17" dy="5.5">účtovného programu M.E.Doc.</tspan>
+      <tspan x="17" dy="5.5">Zasiahol firmy po celom svete,</tspan>
+      <tspan x="17" dy="5.5">napr. prepravcu Maersk.</tspan>
+    </text>
+  </g>
+  <g id="karta-10">
+    <rect class="cut" x="105" y="236.0" width="95" height="55.5" rx="2"/>
+    <rect class="badge" x="112" y="240.5" width="9" height="9" rx="1.5"/>
+    <text class="num" x="116.5" y="246.9" text-anchor="middle">10</text>
+    <text class="hdr" x="124.5" y="246.4">Čierne more · jún 2017</text>
+    <text class="txt" y="257.0">
+      <tspan x="112" dy="0">GPS spoofing: vysielač na pevnine</tspan>
+      <tspan x="112" dy="5.5">napodobnil signál družíc GPS.</tspan>
+      <tspan x="112" dy="5.5">Navigačné prijímače asi 20 lodí</tspan>
+      <tspan x="112" dy="5.5">potom ukazovali polohu na letisku</tspan>
+      <tspan x="112" dy="5.5">Gelendžik (Rusko), vyše 30 km vo</tspan>
+      <tspan x="112" dy="5.5">vnútrozemí.</tspan>
+    </text>
+  </g>
+</svg>
