@@ -209,7 +209,7 @@
         </div>
       </div>
       <ol>
-        <li>Otvor priečinok <code>05_03_httponly_demo</code> (dostal si ho od učiteľky) vo <strong>VS Code</strong>: <kbd>File</kbd> → <kbd>Open Folder…</kbd> → vyber <code>05_03_httponly_demo</code>.</li>
+        <li>Otvor priečinok <code>05_03_httponly_demo</code> vo <strong>VS Code</strong>: <kbd>File</kbd> → <kbd>Open Folder…</kbd> → vyber <code>05_03_httponly_demo</code> Alebo si ho vytvor a vlož doň text nižšie.</li>
         <li>Je v ňom súbor <code>app.py</code> — s ním budeš pracovať.</li>
       </ol>
       <p class="muted" style="font-size:.9rem">Kód dnes <strong>netreba</strong> rozoberať po riadkoch. Všimni si len dve veci: hore premennú <code>HTTP_ONLY = False</code> a v <code>&lt;script&gt;</code> riadok s <code>/* DOPLŇ */</code> — ten doplníš v kroku&nbsp;3. Celá stránka je uložená ako text v premennej <code>PAGE</code> — server ju len pošle, prehliadač ju spustí; preto je JavaScript vnútri úvodzoviek.</p>
@@ -253,7 +253,7 @@ PAGE = """
       const cookies = /* DOPLŇ */;
 
       document.querySelector("#result").textContent =
-        cookies || "JavaScript nevidí žiadne dostupné cookies.";
+        /* DOPLŇ */";
     });
   &lt;/script&gt;
 &lt;/body&gt;
@@ -282,9 +282,9 @@ def kontrola():
     token = request.cookies.get("demo_token")
 
     if token == "FIKTIVNY_TOKEN_123":
-        message = "Server dostal očakávanú fiktívnu cookie."
+        message = "Server dostal cookie FIKTIVNY_TOKEN_123."
     else:
-        message = "Server nedostal očakávanú fiktívnu cookie."
+        message = "Server nedostal očakávanú cookie."
 
     return (
         f"&lt;h1&gt;{message}&lt;/h1&gt;"
@@ -476,7 +476,7 @@ if __name__ == "__main__":
         </div>
       </div>
       <ol>
-        <li>Otvor priečinok <code>05_03_xss_demo</code> (dostal si ho od učiteľky) vo <strong>VS Code</strong>.</li>
+        <li>Otvor priečinok <code>05_03_xss_demo</code>vo <strong>VS Code</strong>.</li>
         <li>Zastav predošlý server (<kbd>Ctrl</kbd>+<kbd>C</kbd>) a spusti tento: <code>python app.py</code>.</li>
         <li>Otvor <code>http://127.0.0.1:5000</code> — uvidíš <strong>Mini-nástenku</strong> s políčkom <em>odkaz</em>.</li>
         <li>Vyskúšaj normálne: napíš <code>Ahoj</code>, stlač <strong>Zobraziť</strong> → ukáže sa <em>„Posledný odkaz: Ahoj"</em>.</li>
