@@ -19,5 +19,4 @@ COOKIES:
 - https://github.com/danakozakova/SS_KBZ_IIIC/blob/main/05_01_KBZ_cookies_PL_studenti.md
 - https://danakozakova.github.io/SS_KBZ_IIIC/05_02_KBZ_cookies_vlastna_cookie_studenti.html
 - https://danakozakova.github.io/SS_KBZ_IIIC/05_03_KBZ_cookies_httponly_studenti.html
-- [05_03_httponly_demo/](https://github.com/danakozakova/SS_KBZ_IIIC/tree/main/05_03_httponly_demo)
-- [05_03_xss_demo](https://github.com/danakozakova/SS_KBZ_IIIC/tree/main/05_03_xss_demo)
+
