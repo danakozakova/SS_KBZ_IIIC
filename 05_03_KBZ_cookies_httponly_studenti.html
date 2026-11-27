@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="sk" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HttpOnly — KBZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#e9ecf2; --surface:#ffffff; --surface-2:#f3f5f9;
+    --ink:#171a22; --muted:#5c6474; --faint:#8a91a1;
+    --line:#d9dee7; --line-strong:#c3cad6;
+    --accent:#0d7a80; --accent-ink:#0a5c61; --accent-soft:#d7ecec;
+    --good:#1f9d57; --good-soft:#e1f4e9;
+    --warn:#c9820a; --warn-soft:#faf0d8;
+    --bad:#cf3d3d; --bad-soft:#fbe4e4;
+    --radius:14px; --shadow:0 1px 2px rgba(20,25,40,.06),0 6px 20px rgba(20,25,40,.05);
+  }
+  html[data-theme="dark"]{
+    --bg:#0e1017; --surface:#171b25; --surface-2:#1f2430;
+    --ink:#e8ebf2; --muted:#a2aab9; --faint:#6f7786;
+    --line:#2a3040; --line-strong:#3a4252;
+    --accent:#33b0b6; --accent-ink:#5ecacf; --accent-soft:#14343a;
+    --good:#3fc27a; --good-soft:#12301f;
+    --warn:#e0a63a; --warn-soft:#352a12;
+    --bad:#e86767; --bad-soft:#3a1c1c;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:800px; margin:0 auto; padding:28px 18px 80px}
+  h1,h2,h3{font-family:"Archivo",sans-serif; text-wrap:balance; line-height:1.18; margin:0}
+  h1{font-size:2rem; font-weight:800; letter-spacing:-.01em}
+  h2{font-size:1.4rem; font-weight:700; margin:0}
+  h3{font-size:1.08rem; font-weight:700}
+  p{margin:.5em 0}
+  code,kbd{font-family:"IBM Plex Mono",monospace; font-size:.92em}
+  kbd{background:var(--surface-2); border:1px solid var(--line-strong); border-bottom-width:2px;
+    border-radius:6px; padding:.05em .45em; font-size:.82em; white-space:nowrap}
+  .kicker{font-family:"IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.12em;
+    font-size:.72rem; color:var(--accent-ink); font-weight:600}
+  .lead{color:var(--muted); font-size:1.08rem; margin-top:.4em}
+
+  /* header */
+  .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:22px}
+  .badge-lock{display:inline-flex; align-items:center; gap:9px; font-family:"IBM Plex Mono",monospace;
+    font-size:.74rem; letter-spacing:.04em; color:var(--muted)}
+  .badge-lock .lk{width:30px;height:30px;border-radius:9px;background:var(--accent-soft);
+    display:grid;place-items:center;color:var(--accent-ink)}
+  .toggle{appearance:none;border:1px solid var(--line-strong);background:var(--surface);
+    color:var(--muted);border-radius:999px;padding:7px 13px;cursor:pointer;font:inherit;font-size:.82rem;
+    display:inline-flex;align-items:center;gap:7px}
+  .toggle:hover{color:var(--ink);border-color:var(--accent)}
+
+  /* recap strip */
+  .recap{border-left:4px solid var(--accent); background:var(--surface);
+    border-radius:0 var(--radius) var(--radius) 0; padding:16px 18px; box-shadow:var(--shadow); margin:22px 0}
+  .recap .tag{font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.1em;
+    font-size:.68rem;color:var(--accent-ink);font-weight:600}
+  .recap p{margin:.35em 0 0}
+
+  /* concept row */
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0}
+  @media (max-width:640px){.grid2{grid-template-columns:1fr}}
+  .mini{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 16px; box-shadow:var(--shadow)}
+  .mini .tag{font-family:"IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.1em; font-size:.66rem; color:var(--accent-ink); font-weight:600}
+  .mini h3{margin:.25em 0 .2em; font-size:1rem}
+  .mini p{margin:.2em 0; font-size:.9rem; color:var(--muted)}
+
+  /* task cards */
+  .task{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:20px 20px 18px; margin:16px 0; position:relative}
+  .task .head{display:flex; gap:14px; align-items:flex-start; margin-bottom:6px}
+  .num{flex:0 0 auto; width:38px;height:38px;border-radius:10px;background:var(--accent);color:#fff;
+    font-family:"Archivo",sans-serif;font-weight:700;font-size:1.15rem;display:grid;place-items:center}
+  .task .why{color:var(--faint); font-size:.86rem; margin:.1em 0 0}
+  .task ol,.task ul{margin:.6em 0 .2em; padding-left:1.3em}
+  .task li{margin:.3em 0}
+
+  /* code block */
+  .code{position:relative; margin:.8em 0}
+  .code pre{margin:0; background:#12151d; color:#e8ebf2; border-radius:10px; padding:15px 15px;
+    overflow:auto; font-family:"IBM Plex Mono",monospace; font-size:.82rem; line-height:1.55; border:1px solid #232838}
+  html[data-theme="dark"] .code pre{background:#0b0d13}
+  .code .copy{position:absolute; top:8px; right:8px; border:1px solid #3a4252; background:#1f2430;
+    color:#cfd6e4; border-radius:7px; padding:4px 10px; font:inherit; font-size:.72rem; cursor:pointer}
+  .code .copy:hover{border-color:var(--accent); color:#fff}
+  .code .copy.ok{color:var(--good); border-color:var(--good)}
+  .fname{font-family:"IBM Plex Mono",monospace; font-size:.72rem; color:var(--faint);
+    display:block; margin-bottom:4px; text-transform:none; letter-spacing:0}
+  .cmd pre{background:#12151d}
+
+  /* callouts */
+  .call{display:flex; gap:12px; border-radius:12px; padding:13px 15px; margin:14px 0; font-size:.95rem}
+  .call .ico{flex:0 0 auto; font-size:1.1rem; line-height:1.4}
+  .call.warn{background:var(--warn-soft); border:1px solid var(--warn)}
+  .call.safe{background:var(--good-soft); border:1px solid var(--good)}
+  .call.bad{background:var(--bad-soft); border:1px solid var(--bad)}
+  .call strong{font-weight:600}
+
+  /* think box */
+  .think{border:2px dashed var(--line-strong); border-radius:12px; padding:15px 17px; margin:16px 0; background:transparent}
+  .think .tag{font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.1em;
+    font-size:.68rem;color:var(--muted);font-weight:600; display:block; margin-bottom:4px}
+
+  /* table */
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:.9rem}
+  th,td{text-align:left; padding:9px 11px; border:1px solid var(--line); vertical-align:top}
+  th{background:var(--surface-2); font-weight:600; font-family:"Archivo",sans-serif}
+  td.fill{background:var(--surface-2)}
+
+  /* resources */
+  .res{display:flex; align-items:center; justify-content:space-between; gap:10px; text-decoration:none;
+    color:inherit; background:var(--surface); border:1px solid var(--line); border-radius:12px;
+    padding:13px 16px; margin:9px 0; box-shadow:var(--shadow)}
+  .res:hover{border-color:var(--accent)}
+  .res .t{font-weight:600}
+  .res .d{font-family:"IBM Plex Mono",monospace; font-size:.76rem; color:var(--faint)}
+  .res .ar{color:var(--accent); font-weight:700}
+
+  /* teacher key */
+  details.key{background:var(--accent-soft); border:1px solid var(--accent); border-radius:12px; padding:4px 16px; margin:22px 0}
+  details.key summary{cursor:pointer; font-family:"Archivo",sans-serif; font-weight:700; padding:11px 0; color:var(--accent-ink)}
+  details.key[open] summary{margin-bottom:6px}
+  details.key ul{margin:.3em 0 .8em; padding-left:1.2em}
+
+  .pool h3{margin-top:16px}
+  .pill{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.05em;
+    text-transform:uppercase; padding:2px 8px; border-radius:999px; border:1px solid var(--line-strong);
+    color:var(--muted); margin-left:6px; vertical-align:middle}
+
+  section{margin-top:34px}
+  .divider{height:1px; background:var(--line); border:0; margin:34px 0}
+  hr.soft{height:1px;background:var(--line);border:0;margin:18px 0}
+  .muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="badge-lock">
+      <span class="lk" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      </span>
+      <span>Kybernetická bezpečnosť · SPŠ IT Ignáca Gessaya</span>
+    </div>
+    <button class="toggle" id="themeToggle" type="button" aria-label="Prepnúť tému">
+      <span id="themeIcon">🌙</span><span id="themeLabel">Tmavý</span>
+    </button>
+  </div>
+
+  <span class="kicker">Cookies · Aktivita 3</span>
+  <h1>HttpOnly: kto smie prečítať cookie?</h1>
+  <p class="lead">Dnešok má <strong>dve časti</strong>. Najprv (Časť 1) spustíš malý server v Pythone (Flask) a zistíš, kto smie cookie prečítať — a čo spraví <code>HttpOnly</code>. Potom (Časť 2) si na vlastnej stránke ukážeš, <strong>prečo na tom záleží</strong>: spravíš a opravíš bezpečnostnú chybu <strong>XSS</strong>.</p>
+
+  <div class="recap">
+    <span class="tag">Z minula · Nadväzuje</span>
+    <p>Minule si si <strong>vyrobil vlastnú cookie</strong> JavaScriptom a videl, že ju cez <code>document.cookie</code> vieš prečítať aj prepísať. Dnes skúmame cookie, ktorú nastaví <strong>server</strong> — a atribút <strong>HttpOnly</strong>, ktorý JavaScriptu zoberie prístup k jej hodnote.</p>
+  </div>
+
+  <div class="call safe">
+    <span class="ico">🎯</span>
+    <div><strong>Cieľ hodiny:</strong> pochopiť, čo presne HttpOnly <strong>zabráni</strong> a čo <strong>nie</strong>. Nejde o naučenie Flasku — server aj stránku máš hotové, dopĺňaš jediný riadok a hlavne <strong>pozoruješ rozdiel</strong>.</div>
+  </div>
+
+  <div class="call warn">
+    <span class="ico">⚠️</span>
+    <div>Pracujeme len s <strong>fiktívnym</strong> tokenom <code>FIKTIVNY_TOKEN_123</code> a lokálnym serverom na tvojom počítači (<code>127.0.0.1</code>). Nikdy sem nedávaj skutočné prihlasovacie tokeny ani heslá. Toto je učebný pokus, nie prihlasovací systém.</div>
+  </div>
+
+  <!-- ============ KTO JE KTO ============ -->
+  <section>
+    <h2>Najprv: kto čo robí</h2>
+    <p class="muted">Server aj prehliadač bežia na tom istom počítači, ale sú to <strong>dva odlišné procesy</strong> s dvoma odlišnými úlohami.</p>
+    <div class="grid2">
+      <div class="mini">
+        <div class="tag">Prehliadač</div>
+        <h3>HTML + JavaScript</h3>
+        <p>zobrazuje stránku, vykonáva JavaScript, uchováva cookies</p>
+      </div>
+      <div class="mini">
+        <div class="tag">Server</div>
+        <h3>Python + Flask</h3>
+        <p>prijíma HTTP požiadavky, vytvára odpovede, môže <strong>nastaviť</strong> cookie</p>
+      </div>
+    </div>
+    <p class="muted" style="font-size:.9rem"><strong>HttpOnly</strong> je atribút, ktorý cookie pridá <em>server</em> v hlavičke <code>Set-Cookie</code>. Cookie s HttpOnly JavaScript cez <code>document.cookie</code> neprečíta — prehliadač ju však stále môže poslať serveru a používateľ ju vidí v DevTools.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ PRAKTICKÁ ČASŤ ============ -->
+  <section>
+    <h2>Časť 1 · HttpOnly — kto smie cookie prečítať</h2>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">1</div>
+        <div>
+          <h3>Priprav si priečinok a súbor <code>app.py</code></h3>
+          <p class="why">prečo — server musí existovať ako súbor, ktorý vieme spustiť</p>
+        </div>
+      </div>
+      <ol>
+        <li>Otvor priečinok <code>05_03_httponly_demo</code> (dostal si ho od učiteľky) vo <strong>VS Code</strong>: <kbd>File</kbd> → <kbd>Open Folder…</kbd> → vyber <code>05_03_httponly_demo</code>.</li>
+        <li>Je v ňom súbor <code>app.py</code> — s ním budeš pracovať.</li>
+      </ol>
+      <p class="muted" style="font-size:.9rem">Kód dnes <strong>netreba</strong> rozoberať po riadkoch. Všimni si len dve veci: hore premennú <code>HTTP_ONLY = False</code> a v <code>&lt;script&gt;</code> riadok s <code>/* DOPLŇ */</code> — ten doplníš v kroku&nbsp;3. Celá stránka je uložená ako text v premennej <code>PAGE</code> — server ju len pošle, prehliadač ju spustí; preto je JavaScript vnútri úvodzoviek.</p>
+      <div class="code">
+        <span class="fname">app.py</span>
+        <button class="copy" type="button">Kopírovať</button>
+<pre><code>from flask import Flask, make_response, request
+
+app = Flask(__name__)
+
+# Experimentálny prepínač. Najprv cookie JavaScriptu sprístupníme (False).
+# V pokuse B ho zmeníš na True.
+HTTP_ONLY = False
+
+PAGE = """
+&lt;!doctype html&gt;
+&lt;html lang="sk"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Pokus s HttpOnly&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Kto môže prečítať cookie?&lt;/h1&gt;
+
+  &lt;p&gt;
+    Cookie obsahuje iba fiktívny token.
+    Toto nie je skutočné prihlásenie.
+  &lt;/p&gt;
+
+  &lt;button id="read"&gt;Prečítať cookies JavaScriptom&lt;/button&gt;
+  &lt;pre id="result"&gt;&lt;/pre&gt;
+
+  &lt;p&gt;
+    &lt;a href="/kontrola"&gt;Overiť, či cookie dostane server&lt;/a&gt;
+  &lt;/p&gt;
+
+  &lt;script&gt;
+    document.querySelector("#read").addEventListener("click", () =&gt; {
+      // ÚLOHA A — doplň pravú stranu:
+      // majú to byť cookies, ktoré vidí JavaScript aktuálnej stránky.
+      const cookies = /* DOPLŇ */;
+
+      document.querySelector("#result").textContent =
+        cookies || "JavaScript nevidí žiadne dostupné cookies.";
+    });
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"""
+
+
+@app.route("/")
+def index():
+    response = make_response(PAGE)
+
+    response.set_cookie(
+        "demo_token",
+        "FIKTIVNY_TOKEN_123",
+        max_age=600,
+        path="/",
+        httponly=HTTP_ONLY,
+        samesite="Lax",
+    )
+
+    return response
+
+
+@app.route("/kontrola")
+def kontrola():
+    token = request.cookies.get("demo_token")
+
+    if token == "FIKTIVNY_TOKEN_123":
+        message = "Server dostal očakávanú fiktívnu cookie."
+    else:
+        message = "Server nedostal očakávanú fiktívnu cookie."
+
+    return (
+        f"&lt;h1&gt;{message}&lt;/h1&gt;"
+        '&lt;p&gt;&lt;a href="/"&gt;Späť na pokus&lt;/a&gt;&lt;/p&gt;'
+    )
+
+
+if __name__ == "__main__":
+    app.run(host="127.0.0.1", port=5000, debug=False)</code></pre>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">2</div>
+        <div>
+          <h3>Nainštaluj Flask</h3>
+          <p class="why">prečo — Flask nie je súčasť štandardného Pythonu, treba ho doinštalovať</p>
+        </div>
+      </div>
+      <ol>
+        <li>Otvor terminál: <kbd>Terminal</kbd> → <kbd>New Terminal</kbd> (pracuje v otvorenom priečinku).</li>
+        <li>Over Python:
+          <div class="code cmd"><button class="copy" type="button">Kopírovať</button><pre><code>python --version</code></pre></div>
+          Ak ti funguje <code>py</code> alebo <code>python3</code>, používaj <strong>rovnaký</strong> príkaz aj ďalej.</li>
+        <li>Nainštaluj Flask:
+          <div class="code cmd"><button class="copy" type="button">Kopírovať</button><pre><code>python -m pip install flask</code></pre></div>
+        </li>
+      </ol>
+      <div class="call warn">
+        <span class="ico">⚠️</span>
+        <div>Zápis <code>python -m pip</code> inštaluje balík presne do toho Pythonu, ktorý spúšťaš. Ak neskôr vyskočí <code>ModuleNotFoundError: No module named 'flask'</code>, pozri časť <em>Ak sa niečo pokazí</em>.</div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">3</div>
+        <div>
+          <h3>Doplň jeden riadok <span class="pill">úloha A</span></h3>
+          <p class="why">prečo — toto je presne to miesto, kde JavaScript číta cookies stránky</p>
+        </div>
+      </div>
+      <p>V <code>app.py</code> nájdi v <code>&lt;script&gt;</code> riadok s medzerou a doplň pravú stranu tak, aby to boli cookies dostupné JavaScriptu aktuálnej stránky:</p>
+      <div class="code">
+        <button class="copy" type="button">Kopírovať</button>
+<pre><code>const cookies = document.cookie;</code></pre>
+      </div>
+      <p>Ulož súbor <kbd>Ctrl</kbd>+<kbd>S</kbd>.</p>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">4</div>
+        <div>
+          <h3>Spusti server a otvor stránku</h3>
+          <p class="why">prečo — stránku ti teraz servíruje tvoj Flask na adrese <code>127.0.0.1:5000</code></p>
+        </div>
+      </div>
+      <ol>
+        <li>V termináli spusti (terminál nechaj <strong>otvorený a bežiaci</strong>):
+          <div class="code cmd"><button class="copy" type="button">Kopírovať</button><pre><code>python app.py</code></pre></div>
+        </li>
+        <li>V prehliadači otvor <code>http://127.0.0.1:5000</code>.</li>
+        <li>Mal by si vidieť nadpis <em>„Kto môže prečítať cookie?"</em>, tlačidlo a odkaz.</li>
+      </ol>
+      <div class="call warn">
+        <span class="ico">⚠️</span>
+        <div>Používaj stále rovnakú adresu. <strong>Nestriedaj</strong> <code>localhost</code> a <code>127.0.0.1</code> — pre cookies sú to dvaja rôzni hostitelia.</div>
+      </div>
+    </div>
+
+    <div class="think">
+      <span class="tag">Zamysli sa (predpoveď) · úloha B</span>
+      <p>Ešte pred zapnutím ochrany si tipni odpovede. Keď o chvíľu nastavíš <code>HTTP_ONLY = True</code>:</p>
+      <ul style="margin:.3em 0 0; padding-left:1.2em">
+        <li>Zmizne cookie z prehliadača?</li>
+        <li>Zmizne jej hodnota iba z výpisu JavaScriptu?</li>
+        <li>Bude ju server na <code>/kontrola</code> stále dostávať?</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">5</div>
+        <div>
+          <h3>Pokus A — bez HttpOnly (<code>HTTP_ONLY = False</code>)</h3>
+          <p class="why">prečo — najprv uvidíš stav, keď JavaScript cookie prečítať smie</p>
+        </div>
+      </div>
+      <ol>
+        <li>Klikni <strong>Prečítať cookies JavaScriptom</strong>. Vo výpise nájdi <code>demo_token=FIKTIVNY_TOKEN_123</code>.</li>
+        <li>Otvor <kbd>F12</kbd> → <kbd>Application</kbd> → <kbd>Cookies</kbd> → položka pre <code>127.0.0.1</code> → nájdi <code>demo_token</code>. Stĺpec <strong>HttpOnly</strong> <em>nie je</em> označený.</li>
+        <li>Klikni odkaz <strong>Overiť, či cookie dostane server</strong>. Očakávaný výsledok: <em>„Server dostal očakávanú fiktívnu cookie."</em></li>
+      </ol>
+      <div class="call safe">
+        <span class="ico">💡</span>
+        <div>Cookie <strong>vytvoril server</strong>, ale nemá HttpOnly — preto ju JavaScript prečíta. Samotné serverové nastavenie cookie teda <strong>nezaručuje</strong>, že je pred JavaScriptom skrytá.</div>
+      </div>
+      <p class="muted" style="font-size:.86rem">Vo výpise sa môžu objaviť aj iné cookies pre <code>127.0.0.1</code> (cookies sa nedelia podľa portu). Sleduj konkrétne <code>demo_token</code>, nie celý výpis.</p>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">6</div>
+        <div>
+          <h3>Pokus B — zapni HttpOnly</h3>
+          <p class="why">prečo — teraz serveru povieš, aby cookie pred JavaScriptom skryl</p>
+        </div>
+      </div>
+      <ol>
+        <li>V <code>app.py</code> zmeň <code>HTTP_ONLY = False</code> na <code>HTTP_ONLY = True</code> a ulož <kbd>Ctrl</kbd>+<kbd>S</kbd>.</li>
+        <li>Klikni do terminálu, kde beží Flask, a zastav server <kbd>Ctrl</kbd>+<kbd>C</kbd>.</li>
+        <li>Spusti ho znova: <code>python app.py</code>.</li>
+        <li>V prehliadači <strong>znova načítaj</strong> <code>http://127.0.0.1:5000</code>.</li>
+        <li>Opäť klikni <strong>Prečítať cookies JavaScriptom</strong>.</li>
+      </ol>
+      <div class="call warn">
+        <span class="ico">🔁</span>
+        <div><strong>Prečo reštart a nové načítanie?</strong> Server má <code>debug=False</code>, takže sa po uložení sám nereštartuje — bežiaci proces používa staré nastavenie. A reštart servera sám cookie v prehliadači nezmení: až <strong>nová odpoveď na <code>/</code></strong> ju nastaví znova, teraz s HttpOnly.</div>
+      </div>
+      <div class="call safe">
+        <span class="ico">💡</span>
+        <div>Očakávanie: <code>demo_token</code> sa vo výpise JavaScriptu <strong>už nezobrazí</strong>. Ostatné cookies bez HttpOnly sa zobrazovať môžu.</div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">7</div>
+        <div>
+          <h3>Over, že cookie <em>nezmizla</em></h3>
+          <p class="why">prečo — HttpOnly nie je zákaz cookie, len obmedzenie prístupu cez JavaScript</p>
+        </div>
+      </div>
+      <ol>
+        <li><kbd>F12</kbd> → <kbd>Application</kbd> → <kbd>Cookies</kbd> → <code>demo_token</code> tam <strong>stále je</strong> a jej hodnotu vidíš.</li>
+        <li>Stĺpec <strong>HttpOnly</strong> je teraz <em>označený</em>.</li>
+        <li>Klikni <strong>Overiť, či cookie dostane server</strong>. Výsledok je stále <em>„Server dostal očakávanú fiktívnu cookie."</em></li>
+      </ol>
+      <div class="code">
+        <span class="fname">čo sa deje s HttpOnly cookie</span>
+<pre><code>Cookie s HttpOnly v prehliadači
+        │
+        ├── JavaScript ju cez document.cookie NEPREČÍTA
+        │
+        └── prehliadač ju MÔŽE odoslať serveru
+                              │
+                              ▼
+                       server ju prečíta</code></pre>
+      </div>
+    </div>
+
+    <h3>Pozorovacia tabuľka <span class="pill">úloha D</span></h3>
+    <p class="muted">Doplň do tabuľky, čo si v jednotlivých pokusoch videl (Áno / Nie).</p>
+    <table>
+      <thead><tr><th>Otázka</th><th>HTTP_ONLY = False</th><th>HTTP_ONLY = True</th></tr></thead>
+      <tbody>
+        <tr><td>Je <code>demo_token</code> v DevTools?</td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>Je <code>demo_token</code> vo výpise JavaScriptu?</td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>Je v DevTools označené HttpOnly?</td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>Server na <code>/kontrola</code> dostal očakávanú cookie?</td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ ČASŤ 2 · XSS ============ -->
+  <section>
+    <h2>Časť 2 · XSS — ukradni token a potom to oprav</h2>
+
+    <div class="call bad">
+      <span class="ico">⚖️</span>
+      <div><strong>Pravidlá vopred (dôležité):</strong> pracuješ <strong>len na vlastnej lokálnej stránke</strong> a s <strong>fiktívnym</strong> tokenom. Cieľ je pochopiť útok, aby si ho vedel ustrážiť. Skúšať toto na cudzích weboch alebo so skutočnými údajmi je <strong>protizákonné</strong> — nič sa nikam neposiela.</div>
+    </div>
+
+    <div class="recap">
+      <span class="tag">Prečo to robíme</span>
+      <p>V Časti 1 si videl, že bez HttpOnly JavaScript cookie prečíta. Teraz uvidíš, <strong>prečo je to nebezpečné</strong>: necháme na stránku vniknúť cudzí skript, ktorý token ukradne — a potom to <strong>dvoma spôsobmi opravíme</strong>.</p>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">8</div>
+        <div>
+          <h3>Spusti druhú demo stránku — „nástenku"</h3>
+          <p class="why">prečo — potrebujeme stránku, ktorá zobrazuje vstup od používateľa</p>
+        </div>
+      </div>
+      <ol>
+        <li>Otvor priečinok <code>05_03_xss_demo</code> (dostal si ho od učiteľky) vo <strong>VS Code</strong>.</li>
+        <li>Zastav predošlý server (<kbd>Ctrl</kbd>+<kbd>C</kbd>) a spusti tento: <code>python app.py</code>.</li>
+        <li>Otvor <code>http://127.0.0.1:5000</code> — uvidíš <strong>Mini-nástenku</strong> s políčkom <em>odkaz</em>.</li>
+        <li>Vyskúšaj normálne: napíš <code>Ahoj</code>, stlač <strong>Zobraziť</strong> → ukáže sa <em>„Posledný odkaz: Ahoj"</em>.</li>
+      </ol>
+      <p class="muted" style="font-size:.9rem">V <code>app.py</code> si všimni komentár <code>⚠️ CHYBA (XSS)</code> — server tvoj odkaz vkladá do stránky <strong>bez ošetrenia</strong>. Presne to teraz zneužijeme.</p>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">9</div>
+        <div>
+          <h3>Nájdi dieru <span class="pill">úloha F</span></h3>
+          <p class="why">prečo — zistíš, že server náš text vkladá ako HTML, nie ako obyčajný text</p>
+        </div>
+      </div>
+      <ol>
+        <li>Do políčka napíš <code>&lt;b&gt;tučné&lt;/b&gt;</code> a stlač <strong>Zobraziť</strong>.</li>
+        <li>Odkaz sa zobrazí <strong>tučne</strong> — nie ako napísaný text.</li>
+      </ol>
+      <div class="call warn">
+        <span class="ico">⚠️</span>
+        <div>To je zlé znamenie: server náš vstup <strong>interpretoval ako HTML značku</strong>. Zamysli sa: čo sa stane, keď namiesto <code>&lt;b&gt;</code> napíšem <code>&lt;script&gt;</code>?</div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">10</div>
+        <div>
+          <h3>Útok — ukradni token <span class="pill">úloha G</span></h3>
+          <p class="why">prečo — uvidíš, že cudzí skript číta cookie presne ako tvoje tlačidlo v Časti 1</p>
+        </div>
+      </div>
+      <p>Do políčka <em>odkaz</em> vlož tento „útočníkov" kód a stlač <strong>Zobraziť</strong>:</p>
+      <div class="code">
+        <button class="copy" type="button">Kopírovať</button>
+<pre><code>&lt;script&gt;fetch('/zber?c=' + encodeURIComponent(document.cookie))&lt;/script&gt;</code></pre>
+      </div>
+      <ol>
+        <li>Pozri sa do <strong>terminálu</strong> vo VS Code, kde beží server.</li>
+        <li>Uvidíš riadok: <code>‼️ [utocnik] prislo mi: demo_token=FIKTIVNY_TOKEN_123</code>.</li>
+      </ol>
+      <div class="call bad">
+        <span class="ico">🩸</span>
+        <div>Čo sa stalo: tvoj vložený <code>&lt;script&gt;</code> sa <strong>spustil na stránke</strong>, prečítal cookie cez <code>document.cookie</code> a poslal ju na <code>/zber</code> („server útočníka"). V reálnom svete by šla na cudzí server a útočník by mal tvoje prihlásenie. Prehliadač nerozlišuje <strong>tvoj</strong> a <strong>cudzí</strong> skript — spustí každý, čo je na stránke.</div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">11</div>
+        <div>
+          <h3>Obrana A — escapovanie <span class="pill">úloha H</span> <span class="pill">skutočná oprava</span></h3>
+          <p class="why">prečo — odstránime príčinu: vstup sa už nebude vkladať ako kód</p>
+        </div>
+      </div>
+      <ol>
+        <li>Hore v <code>app.py</code> pridaj import:
+          <div class="code"><button class="copy" type="button">Kopírovať</button><pre><code>from markupsafe import escape</code></pre></div>
+        </li>
+        <li>Nájdi riadok s chybou a <strong>oprav ho</strong>:
+          <div class="code"><button class="copy" type="button">Kopírovať</button><pre><code>telo = "&lt;p&gt;Posledný odkaz: " + str(escape(odkaz)) + "&lt;/p&gt;"</code></pre></div>
+        </li>
+        <li>Ulož, reštartuj server (<kbd>Ctrl</kbd>+<kbd>C</kbd>, <code>python app.py</code>) a skús znova vložiť ten <code>&lt;script&gt;</code>.</li>
+      </ol>
+      <div class="call safe">
+        <span class="ico">✅</span>
+        <div>Teraz sa skript <strong>nespustí</strong> — na stránke uvidíš doslova napísané <code>&lt;script&gt;…&lt;/script&gt;</code> ako text a v termináli už <strong>nič nepríde</strong>. <code>escape()</code> premení <code>&lt;</code> <code>&gt;</code> na <code>&amp;lt;</code> <code>&amp;gt;</code> → prehliadač to berie ako <strong>text, nie príkaz</strong>.</div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="head">
+        <div class="num">12</div>
+        <div>
+          <h3>Obrana B — HttpOnly <span class="pill">úloha I</span> <span class="pill">poistka</span></h3>
+          <p class="why">prečo — uvidíš, čo HttpOnly spraví, keď diera (zámerne) OSTANE</p>
+        </div>
+      </div>
+      <ol>
+        <li>Dočasne <strong>vráť</strong> chybný riadok späť (bez <code>escape</code>) — chceme vidieť útok, keď diera ostane.</li>
+        <li>Hore zmeň <code>HTTP_ONLY = False</code> na <code>True</code>, ulož, reštartuj server, obnov <code>/</code>.</li>
+        <li>Skús injekciu z úlohy G znova a pozri do terminálu.</li>
+      </ol>
+      <div class="call warn">
+        <span class="ico">🛡️</span>
+        <div>Skript sa <strong>stále spustí</strong> (dieru sme nechali), ale v termináli už token <strong>nie je</strong> — <code>document.cookie</code> ho pri HttpOnly nevráti, útok nemá čo ukradnúť. <strong>Pozor:</strong> iné cookies bez HttpOnly by stále unikli a skript môže páchať aj iné škody. Preto <strong>Obrana A je skutočná oprava, HttpOnly je len poistka.</strong></div>
+      </div>
+    </div>
+
+    <h3>Pozorovacia tabuľka 2 <span class="pill">úloha J</span></h3>
+    <p class="muted">Doplň Áno / Nie podľa toho, čo si videl.</p>
+    <table>
+      <thead><tr><th>Otázka</th><th>diera + bez HttpOnly</th><th>diera + HttpOnly</th><th>escapovanie (oprava)</th></tr></thead>
+      <tbody>
+        <tr><td>Spustí sa vložený <code>&lt;script&gt;</code>?</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+        <tr><td>Unikne <code>demo_token</code> na <code>/zber</code>?</td><td class="fill"></td><td class="fill"></td><td class="fill"></td></tr>
+      </tbody>
+    </table>
+
+    <div class="call safe">
+      <span class="ico">🎯</span>
+      <div><strong>Záver Časti 2:</strong> XSS vznikne, keď sa údaj od používateľa dostane do stránky <strong>ako kód</strong>. Hlavná obrana je <strong>escapovať výstup</strong> („ber to ako text, nie príkaz"). HttpOnly XSS nerieši — je to posledná poistka, aby sa pri chybe neukradol prihlasovací token. Poradie obrany: <strong>1.</strong> neurob XSS (escapuj) · <strong>2.</strong> CSP · <strong>3.</strong> HttpOnly na citlivej cookie.</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ ZHRNUTIE / OBRANA ============ -->
+  <section>
+    <h2>Čo si z toho odniesť</h2>
+    <div class="call safe">
+      <span class="ico">✅</span>
+      <div><strong>HttpOnly</strong> je atribút cookie nastavený serverom. Cookie s HttpOnly <strong>JavaScript stránky neprečíta</strong> cez <code>document.cookie</code>. Prehliadač ju však stále automaticky posiela serveru a používateľ ju vidí v DevTools.</div>
+    </div>
+    <div class="call warn">
+      <span class="ico">🛡️</span>
+      <div>Pointa: <strong>ak JavaScript prihlasovací identifikátor nepotrebuje čítať, zbytočne mu tento prístup nedávame.</strong> Keby cookie niesla platný identifikátor relácie a na stránku sa dostal útočníkov skript (napr. cez XSS), bez HttpOnly by ho prečítal rovnako ako naše tlačidlo.</div>
+    </div>
+    <div class="call bad">
+      <span class="ico">🚫</span>
+      <div><strong>Čo HttpOnly NEvyrieši:</strong> nešifruje hodnotu cookie · neschová ju pred používateľom DevTools · neoverí, že hodnota je pravdivá · nenahrádza HTTPS, Secure ani SameSite · nevyrieši celé XSS (škodlivý skript môže stále meniť stránku a posielať požiadavky).</div>
+    </div>
+
+    <div class="think">
+      <span class="tag">Zamysli sa · úloha E</span>
+      <p>Minule bola cookie so <strong>zvoleným menom</strong> čitateľná JavaScriptom a nevadilo to. Prihlasovací identifikátor by sme pred ním spravidla <strong>chránili</strong>. Vysvetli jednou-dvoma vetami, prečo je v tom rozdiel.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ DVA PROBLÉMY ============ -->
+  <section>
+    <h2>Dva problémy, ktoré si nezamieňaj</h2>
+    <div class="grid2">
+      <div class="mini">
+        <div class="tag">A · dôveryhodnosť vstupu</div>
+        <h3>Môžeme veriť tvrdeniu z prehliadača?</h3>
+        <p>Napr. <code>rola=administrator</code> v cookie <strong>nestačí</strong> na prístup. O oprávneniach rozhoduje <strong>server</strong> na základe overených údajov. Skrytie tlačidla JavaScriptom nie je kontrola prístupu.</p>
+      </div>
+      <div class="mini">
+        <div class="tag">B · prístup skriptu k údaju</div>
+        <h3>Má JavaScript vôbec vedieť prečítať token?</h3>
+        <p>Práve toto rieši <strong>HttpOnly</strong>. Nie je to podpis, šifrovanie ani potvrdenie identity — iba obmedzenie priameho čítania hodnoty cez JavaScript.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ ZÁSOBNÍK ÚLOH ============ -->
+  <section class="pool">
+    <h2>Ďalšie úlohy a projekty</h2>
+
+    <h3>Rýchle na hodinu</h3>
+    <ul>
+      <li>V <kbd>DevTools → Network</kbd> obnov stránku <code>/</code>, vyber HTML dokument a v <strong>Response Headers</strong> nájdi <code>Set-Cookie</code>. Pri zapnutej ochrane skontroluj prítomnosť <code>HttpOnly</code>.</li>
+      <li>Klikni na <code>/kontrola</code> a v <strong>Request Headers</strong> nájdi hlavičku <code>Cookie</code> — <code>demo_token</code> tam je aj pri zapnutom HttpOnly.</li>
+    </ul>
+
+    <h3>Technické <span class="pill">náročnejšie</span></h3>
+    <ul>
+      <li>Pridaj v serveri <strong>druhú</strong> cookie bez HttpOnly (iný názov) a over, ktorá z dvojice sa po zapnutí HttpOnly objaví vo výpise JavaScriptu a ktorá nie.</li>
+      <li>Zmeň port na <code>5001</code> v <code>app.run(...)</code> a over, že demo funguje aj na <code>http://127.0.0.1:5001</code>.</li>
+    </ul>
+
+    <h3>Diskusia <span class="pill">skupinové</span></h3>
+    <ul>
+      <li>Kde v reálnej aplikácii dáva zmysel <strong>HttpOnly</strong> (napr. relačná cookie) a kde naopak potrebujeme cookie, ktorú JavaScript <strong>má</strong> čítať (napr. zvolený jazyk, stav súhlasu)?</li>
+    </ul>
+
+    <h3>Na známku <span class="pill">na známku</span></h3>
+    <ul>
+      <li>Krátky zápis (3–5 viet): čo HttpOnly <strong>robí</strong>, čo <strong>nerobí</strong>, a prečo server cookie <strong>stále dostane</strong>, aj keď ju JavaScript neprečíta.</li>
+      <li>Druhý zápis (3–5 viet): čo je <strong>XSS</strong>, ako sa cez ňu dá ukradnúť token, a čím sa líšia <strong>dve obrany</strong> (escapovanie vs. HttpOnly) — ktorá je skutočná oprava a prečo.</li>
+    </ul>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ AK SA NIEČO POKAZÍ ============ -->
+  <section>
+    <h2>Ak sa niečo pokazí</h2>
+    <ul>
+      <li><strong><code>ModuleNotFoundError: No module named 'flask'</code>:</strong> Flask nie je v tom Pythone, ktorým spúšťaš. V tom istom termináli skús <code>python -m pip show flask</code>, potom <code>python -m pip install flask</code> a znova <code>python app.py</code>.</li>
+      <li><strong>Python sa nenašiel:</strong> použi školský spôsob — <code>py</code> alebo <code>python3</code>. Nemeň príkaz medzi inštaláciou a spustením.</li>
+      <li><strong>Port 5000 je obsadený:</strong> zastav starý server <kbd>Ctrl</kbd>+<kbd>C</kbd>, alebo zmeň port na <code>5001</code> v <code>app.run</code> a otvor <code>http://127.0.0.1:5001</code>.</li>
+      <li><strong>Cookie zostáva vo výpise aj po zmene na <code>True</code>:</strong> je súbor uložený? reštartoval si správny server? obnovil si cestu <code>/</code> (tá cookie nastavuje)? sleduješ naozaj <code>demo_token</code>?</li>
+      <li><strong>Server nedostal očakávanú cookie:</strong> najprv otvor <code>/</code>, až potom <code>/kontrola</code> — samotná <code>/kontrola</code> cookie nevytvára.</li>
+    </ul>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ ZDROJE ============ -->
+  <section>
+    <h2>Zdroje</h2>
+    <a class="res" href="https://security.muni.cz" target="_blank" rel="noopener">
+      <span><span class="t">MUNI — Kybernetická bezpečnosť</span><br><span class="d">security.muni.cz</span></span>
+      <span class="ar">→</span>
+    </a>
+    <a class="res" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie" target="_blank" rel="noopener">
+      <span><span class="t">MDN — Set-Cookie (atribút HttpOnly)</span><br><span class="d">developer.mozilla.org</span></span>
+      <span class="ar">→</span>
+    </a>
+    <a class="res" href="https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie" target="_blank" rel="noopener">
+      <span><span class="t">MDN — document.cookie</span><br><span class="d">developer.mozilla.org</span></span>
+      <span class="ar">→</span>
+    </a>
+  </section>
+
+  <!-- ============ KĽÚČ PRE UČITEĽA ============ -->
+  <details class="key">
+    <summary>Kľúč pre učiteľa</summary>
+    <p><strong>Úloha A:</strong> <code>const cookies = document.cookie;</code></p>
+    <p><strong>Úloha B (predpoveď) → správne odpovede:</strong> cookie z prehliadača <em>nezmizne</em>; zmizne iba jej hodnota <em>z výpisu JavaScriptu</em>; server ju <em>stále dostáva</em>.</p>
+    <p><strong>Úloha D (tabuľka):</strong></p>
+    <ul>
+      <li><code>demo_token</code> v DevTools: <b>Áno / Áno</b></li>
+      <li><code>demo_token</code> vo výpise JS: <b>Áno / Nie</b></li>
+      <li>Označené HttpOnly: <b>Nie / Áno</b></li>
+      <li>Server dostal cookie na <code>/kontrola</code>: <b>Áno / Áno</b></li>
+    </ul>
+    <p><strong>Úloha E (očakávaná odpoveď):</strong> meno slúži len na zvolený pozdrav; prihlasovací identifikátor môže umožniť prístup k účtu, takže jeho odcudzenie má úplne iné následky. Zobrazené meno z cookie nesmie byť dôkazom identity.</p>
+    <p><strong>Časté chyby:</strong> žiaci po zmene na <code>True</code> zabudnú reštartovať server alebo znova načítať <code>/</code> → cookie „ešte stará" bez HttpOnly; alebo striedajú <code>localhost</code> a <code>127.0.0.1</code>. Riešenie <code>app.py</code> je v priečinku <code>05_03_httponly_demo_riesenie/</code>.</p>
+    <hr class="soft">
+    <p><strong>Časť 2 · úloha G (injekcia):</strong> <code>&lt;script&gt;fetch('/zber?c='+encodeURIComponent(document.cookie))&lt;/script&gt;</code> — vloží sa do políčka <em>odkaz</em>.</p>
+    <p><strong>Úloha H (obrana A):</strong> <code>from markupsafe import escape</code> + <code>telo = "&lt;p&gt;Posledný odkaz: " + str(escape(odkaz)) + "&lt;/p&gt;"</code>.</p>
+    <p><strong>Úloha J (tabuľka 2):</strong></p>
+    <ul>
+      <li>Spustí sa vložený skript? → <b>Áno / Áno / Nie</b></li>
+      <li>Unikne <code>demo_token</code> na <code>/zber</code>? → <b>Áno / Nie / Nie</b></li>
+    </ul>
+    <p><strong>Pointa pre diskusiu:</strong> HttpOnly zastaví <em>krádež tokenu</em>, ale skript stále beží (môže meniť stránku, posielať požiadavky). Escapovanie zastaví <em>spustenie skriptu</em> — rieši príčinu. Riešenie <code>app.py</code> je v <code>05_03_xss_demo_riesenie/</code>.</p>
+  </details>
+
+</div>
+
+<script>
+  // --- theme toggle (localStorage v try/catch) ---
+  (function(){
+    const root=document.documentElement, icon=document.getElementById("themeIcon"),
+          label=document.getElementById("themeLabel"), btn=document.getElementById("themeToggle");
+    function apply(t){
+      root.setAttribute("data-theme",t);
+      const dark=t==="dark";
+      icon.textContent=dark?"☀️":"🌙";
+      label.textContent=dark?"Svetlý":"Tmavý";
+    }
+    let saved="light";
+    try{ saved=localStorage.getItem("kbz-theme")||"light"; }catch(e){}
+    apply(saved);
+    btn.addEventListener("click",()=>{
+      const next=root.getAttribute("data-theme")==="dark"?"light":"dark";
+      apply(next);
+      try{ localStorage.setItem("kbz-theme",next); }catch(e){}
+    });
+  })();
+
+  // --- copy buttons ---
+  document.querySelectorAll(".code .copy").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const pre=btn.parentElement.querySelector("pre");
+      const text=pre?pre.innerText:"";
+      const done=()=>{const o=btn.textContent;btn.textContent="Skopírované ✓";btn.classList.add("ok");
+        setTimeout(()=>{btn.textContent=o;btn.classList.remove("ok");},1400);};
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(()=>fallback(text,done));
+      }else{ fallback(text,done); }
+    });
+  });
+  function fallback(text,done){
+    const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");done();}catch(e){}
+    document.body.removeChild(ta);
+  }
+</script>
+</body>
+</html>
